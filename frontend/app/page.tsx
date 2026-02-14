@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const HomeIcon = () => (
   <svg
     viewBox="0 0 24 24"
-    className="h-5 w-5 text-zinc-700"
+    className="h-5 w-5 "
     fill="none"
     stroke="currentColor"
     strokeWidth="1.6"
@@ -69,7 +69,7 @@ const pages = [
 
 const fontCards = [
   { name: "Averia Serif Libre" },
-  { name: "Cabin" },
+  { name: "haha" },
   { name: "" },
 ];
 
@@ -170,7 +170,7 @@ const explore = [
 
 export default function Home() {
   return (
-    <div className="min-h-[100svh] overflow-x-hidden overflow-y-auto bg-black font-[Cabin,sans-serif] sm:px-4">
+    <div className="min-h-[100svh] overflow-x-hidden overflow-y-auto bg-black sm:px-4">
     
       <motion.div
         className="mx-auto w-full bg-[#fbfbfb] px-4 pb-10 pt-5 shadow-[0_18px_40px_rgba(0,0,0,0.08)] sm:max-w-[440px]"
@@ -202,7 +202,7 @@ export default function Home() {
           <motion.div className="relative" variants={fadeItem}>
             <input
               placeholder="Search your Interests..."
-              className="w-full rounded-full border border-zinc-200/70 bg-white px-4 py-3 text-sm text-zinc-700 shadow-[0_8px_18px_rgba(0,0,0,0.08)] focus:outline-none"
+              className="w-full rounded-full border border-zinc-200/70 bg-white px-4 py-3 text-sm  shadow-[0_8px_18px_rgba(0,0,0,0.08)] focus:outline-none"
             />
           </motion.div>
 
@@ -222,12 +222,12 @@ export default function Home() {
                 className="absolute -bottom-6 left-4 h-12 w-12 rounded-full border-2 border-white object-cover"
               />
             </div>
-            <div className="mt-8 px-4">
-              <h1 className="text-xl font-semibold text-zinc-900">
+            <div className="mt-8 px-2">
+              <h1 className="text-xl oxygen-bold">
                 Khushi Joshi
               </h1>
-              <p className="text-sm text-zinc-500">Digital Architect</p>
-              <p className="mt-3 text-sm leading-6 text-zinc-600">
+              <p className="text-sm inter-regular text-[#787878]">Digital Architect</p>
+              <p className="mt-3 text-xs karla-regular">
                 Designing my own operating system for growth.
               </p>
             </div>
@@ -244,10 +244,10 @@ export default function Home() {
                   aria-label="Select platform"
                   defaultValue="Instagram"
                 >
-                  <option>Instagram</option>
-                  <option>Threads</option>
-                  <option>YouTube</option>
-                  <option>Substack</option>
+                  <option className="cabin-regular">Instagram</option>
+                  <option className="cabin-regular">Threads</option>
+                  <option className="cabin-regular">YouTube</option>
+                  <option className="cabin-regular">Substack</option>
                 </select>
                 <svg
                   viewBox="0 0 24 24"
@@ -267,11 +267,11 @@ export default function Home() {
                   <Link
                     key={page.title}
                     href="#"
-                    className="min-w-[360px] min-h-[210px] snap-start rounded-[32px] bg-white p-5 shadow-[0_16px_34px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98]"
+                    className="min-w-[410px] min-h-[250px] snap-start rounded-[32px] bg-white p-5 shadow-[0_16px_34px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98]"
                   >
                     <div className="flex items-center gap-4 pt-1">
                       <div
-                        className="flex h-40 w-30 items-center justify-center rounded-[22px] text-2xl font-semibold text-white shadow-[0_12px_24px_rgba(0,0,0,0.2)]"
+                        className="flex h-50 w-38 items-center justify-center rounded-[30px] text-2xl font-semibold text-white shadow-[0_12px_24px_rgba(0,0,0,0.2)]"
                         style={{ backgroundColor: page.accent }}
                       >
                         {page.logoText}
@@ -312,7 +312,7 @@ export default function Home() {
           </motion.section>
 
           <motion.section className="flex flex-col gap-3" variants={fadeItem}>
-            <h2 className="happy-monkey-regular text-sm text-zinc-700">
+            <h2 className="happy-monkey-regular text-sm ">
               Fonts I love
             </h2>
             <div className="flex gap-3">
@@ -330,7 +330,7 @@ export default function Home() {
 
           <motion.section className="flex flex-col gap-3" variants={fadeItem}>
             <div className="flex items-center justify-between">
-              <h2 className="happy-monkey-regular text-sm text-zinc-700">
+              <h2 className="happy-monkey-regular text-sm">
                 Books worth investing time
               </h2>
             </div>
@@ -354,7 +354,7 @@ export default function Home() {
           </motion.section>
 
           <motion.section className="flex flex-col gap-3" variants={fadeItem}>
-            <h2 className="happy-monkey-regular text-sm text-zinc-700">
+            <h2 className="happy-monkey-regular text-sm ">
               Hobbies
             </h2>
             <div className="flex gap-4">
@@ -375,7 +375,7 @@ export default function Home() {
           </motion.section>
 
           <motion.section className="flex flex-col gap-3" variants={fadeItem}>
-            <h2 className="happy-monkey-regular text-sm text-zinc-700">
+            <h2 className="happy-monkey-regular text-sm ">
               Grooming
             </h2>
             <div className="flex gap-3">
@@ -396,7 +396,7 @@ export default function Home() {
           </motion.section>
 
           <motion.section className="flex flex-col gap-3" variants={fadeItem}>
-            <h2 className="happy-monkey-regular text-sm text-zinc-700">
+            <h2 className="happy-monkey-regular text-sm ">
               Fitness
             </h2>
             <div className="flex gap-3">
@@ -417,7 +417,7 @@ export default function Home() {
           </motion.section>
 
           <motion.section className="flex flex-col gap-3" variants={fadeItem}>
-            <h2 className="happy-monkey-regular text-sm text-zinc-700">
+            <h2 className="happy-monkey-regular text-sm ">
               Go out and explore..
             </h2>
             <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">

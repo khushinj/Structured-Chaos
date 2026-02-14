@@ -1,15 +1,55 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Cabin,
+  Capriola,
+  Caveat_Brush,
+  Happy_Monkey,
+  Inter,
+  Karla,
+  Oxygen,
+} from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const happyMonkey = Happy_Monkey({
+  weight: ["400"],
   subsets: ["latin"],
+  variable: "--font-happy-monkey",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const cabin = Cabin({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
+  variable: "--font-cabin",
+});
+
+const capriola = Capriola({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-capriola",
+});
+
+const caveatBrush = Caveat_Brush({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-caveat-brush",
+});
+
+const inter = Inter({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const karla = Karla({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-karla",
+});
+
+const oxygen = Oxygen({
+  weight: ["300", "400", "700"],
+  subsets: ["latin"],
+  variable: "--font-oxygen",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +65,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${happyMonkey.variable} ${cabin.variable} ${capriola.variable} ${caveatBrush.variable} ${inter.variable} ${karla.variable} ${oxygen.variable} antialiased`}
       >
         {children}
       </body>
