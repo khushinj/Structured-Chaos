@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import arrowImg from '../public/arrow.png';
+import craftx from '../public/craftxImg.png';
+import CardImg2 from '../public/CardImg2.png';
+import CardImg3 from '../public/CardImg3.png';
 
 const HomeIcon = () => (
   <svg
@@ -47,25 +50,25 @@ const fadeItem = {
 
 const pages = [
   {
-    title: "craftx",
+    // title: "craftx",
     handle: "craftx",
     description: "Will help you\nin learning\n\"How to sell\"",
     accent: "#163d22",
-    logoText: "craftx",
+    logo: craftx,
   },
   {
     title: "investing your time",
     handle: "invest",
     description: "Always moving\npeople love\ninteresting things",
     accent: "#2e4a39",
-    logoText: "invest",
+    logo: CardImg2,
   },
   {
     title: "khushidevops",
     handle: "khushi",
     description: "Sharing life,\nworking vibe,\nfeeling alive",
     accent: "#1f3b45",
-    logoText: "dev",
+    logo: CardImg3,
   },
 ];
 
@@ -267,16 +270,19 @@ export default function Home() {
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-10">
                 {pages.map((page) => (
                   <Link
-                    key={page.title}
+                    key={page.handle}
                     href="#"
                     className="min-w-[410px] max-h-[230px] snap-start rounded-[32px] bg-white px-5 shadow-[0_16px_34px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98]"
                   >
-                    <div className="flex items-center gap-4 pt-6">
-                      <div
-                        className="flex h-45 w-35 items-center justify-center rounded-[30px] text-2xl font-semibold text-white shadow-[0_12px_24px_rgba(0,0,0,0.2)]"
-                        style={{ backgroundColor: page.accent }}
-                      >
-                        {page.logoText}
+                    <div className="flex items-center gap-4 pt-6 ">
+                      <div className="relative h-40 w-32 overflow-hidden rounded-[30px] shadow-[0_12px_24px_rgba(0,0,0,0.2)]">
+                        <Image
+                          src={page.logo}
+                          alt={page.title ?? page.handle}
+                          fill
+                          className="object-cover "
+                          sizes="128px"
+                        />
                       </div>
                       <div className="flex flex-1 items-start gap-3">
                         <div className="pt-2">
