@@ -170,9 +170,9 @@ const explore = [
 
 export default function Home() {
   return (
-    <div className="h-[100vh] overflow-y-auto bg-black px-4 py-6 font-[Cabin,sans-serif]">
+    <div className="min-h-[100svh] overflow-x-hidden overflow-y-auto bg-black px-2 py-6 font-[Cabin,sans-serif] sm:px-4">
       <motion.div
-        className="mx-auto w-full max-w-[390px] rounded-[32px] bg-[#fbfbfb] px-4 pb-10 pt-5 shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
+        className="mx-auto w-full rounded-[32px] bg-[#fbfbfb] px-4 pb-10 pt-5 shadow-[0_18px_40px_rgba(0,0,0,0.08)] sm:max-w-[420px]"
         variants={fadeContainer}
         initial="hidden"
         animate="show"
@@ -234,12 +234,12 @@ export default function Home() {
 
           <motion.section className="flex flex-col gap-3 my-10" variants={fadeItem}>
             <div className="flex items-center justify-between">
-              <h2 className="happy-monkey-regular text-2xl text-zinc-900 ">
+              <h2 className="happy-monkey-regular text-2xl">
                 Pages
               </h2>
-              <div className="relative rounded-full border">
+              <div className="relative rounded-full border mt-1">
                 <select
-                  className="appearance-none rounded-full border border-zinc-300 bg-white px-4 py-2 pr-10 text-sm font-medium text-zinc-800 shadow-[0_8px_16px_rgba(0,0,0,0.08)] focus:outline-none"
+                  className="appearance-none rounded-full border border-zinc-300 bg-white px-4 py-2 pr-10 text-sm font-medium shadow-[0_8px_16px_rgba(0,0,0,0.08)] focus:outline-none"
                   aria-label="Select platform"
                   defaultValue="Instagram"
                 >
