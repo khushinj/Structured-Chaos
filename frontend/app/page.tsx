@@ -170,7 +170,7 @@ const explore = [
 
 export default function Home() {
   return (
-    <div className="min-h-[100svh] overflow-x-hidden overflow-y-auto bg-black px-2 font-[Cabin,sans-serif] sm:px-4">
+    <div className="min-h-[100svh] overflow-x-hidden overflow-y-auto bg-black font-[Cabin,sans-serif] sm:px-4">
     
       <motion.div
         className="mx-auto w-full bg-[#fbfbfb] px-4 pb-10 pt-5 shadow-[0_18px_40px_rgba(0,0,0,0.08)] sm:max-w-[440px]"
