@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import arrowImg from '../public/arrow.png';
 
 const HomeIcon = () => (
   <svg
@@ -267,19 +269,21 @@ export default function Home() {
                   <Link
                     key={page.title}
                     href="#"
-                    className="min-w-[410px] min-h-[250px] snap-start rounded-[32px] bg-white p-5 shadow-[0_16px_34px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98]"
+                    className="min-w-[410px] max-h-[230px] snap-start rounded-[32px] bg-white px-5 shadow-[0_16px_34px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98]"
                   >
-                    <div className="flex items-center gap-4 pt-1">
+                    <div className="flex items-center gap-4 pt-6">
                       <div
-                        className="flex h-50 w-38 items-center justify-center rounded-[30px] text-2xl font-semibold text-white shadow-[0_12px_24px_rgba(0,0,0,0.2)]"
+                        className="flex h-45 w-35 items-center justify-center rounded-[30px] text-2xl font-semibold text-white shadow-[0_12px_24px_rgba(0,0,0,0.2)]"
                         style={{ backgroundColor: page.accent }}
                       >
                         {page.logoText}
                       </div>
                       <div className="flex flex-1 items-start gap-3">
-                        <div className="pt-2 text-xl">→</div>
-                        <div className="flex flex-col gap-2">
-                          <div className="capriola-regular flex items-center gap-2 text-xs">
+                        <div className="pt-2">
+                          <Image src={arrowImg} alt="Arrow" className="h-15 w-15 mt-12" />
+                        </div>
+                        <div className="flex flex-col gap-4">
+                          <div className="capriola-regular flex items-center text-xs">
                             <svg
                               viewBox="0 0 24 24"
                               className="h-4 w-4"
@@ -296,10 +300,10 @@ export default function Home() {
                               />
                               <circle cx="12" cy="12" r="3" />
                               <circle cx="17" cy="7" r="1" />
-                            </svg>
+                            </svg>   {/* insta icon */}
                             {page.handle}
                           </div>
-                          <div className="whitespace-pre-line caveat-brush-regular text-2xl font-bold">
+                          <div className="mb-5 whitespace-pre-line caveat-brush-regular text-[28px] font-bold">
                             {page.description}
                           </div>
                         </div>
