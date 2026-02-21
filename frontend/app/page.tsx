@@ -1,31 +1,55 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import arrowImg from '../public/arrow.png';
-import craftx from '../public/craftxImg.png';
-import CardImg2 from '../public/CardImg2.png';
-import CardImg3 from '../public/CardImg3.png';
-import book1 from '../public/book1.jpg';
-import book2 from '../public/book2.jpg';
-import book3 from '../public/book3.jpg';
-import book4 from '../public/book4.jpg';
-import book5 from '../public/book5.jpg';
-import guitar from '../public/guitar.png';
-import crochet from '../public/crochet.png';
-import groom1 from '../public/groom1.jpg';
-import groom2 from '../public/groom2.jpg';
-import groom3 from '../public/groom3.jpg';
-import groom4 from '../public/groom4.jpg';
-import groom5 from '../public/groom5.jpg';
-import fitness1 from '../public/fitness1.jpg';
-import fitness2 from '../public/fitness2.jpg';
-import fitness3 from '../public/fitness3.jpg';
-import fitness4 from '../public/fitness4.jpg';
-import flowerExplore from '../public/flower-explore.jpg';
-import starbucks from '../public/starbucks.jpg';
+
+type SectionKey = "pages" | "fonts" | "books" | "hobbies" | "grooming" | "fitness" | "explore";
+
+type PageCard = {
+  id?: string;
+  handle: string;
+  description: string;
+  image: string;
+};
+
+type FontCard = {
+  id?: string;
+  name: string;
+};
+
+type BasicCard = {
+  id?: string;
+  title: string;
+  image: string;
+};
+
+type FormState = {
+  title: string;
+  image: string;
+  description: string;
+  handle: string;
+  name: string;
+};
+
+type ApiEntry = {
+  id?: string;
+  title?: string;
+  image?: string;
+  description?: string;
+  handle?: string;
+  name?: string;
+};
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+
+const emptyForm: FormState = {
+  title: "",
+  image: "",
+  description: "",
+  handle: "",
+  name: "",
+};
 
 
 const HomeIcon = () => (
@@ -81,152 +105,128 @@ const fadeItem = {
   show: { opacity: 1, y: 0, transition: { duration: 0.22 } },
 };
 
-const navMenuItems = [
-  { label: "Pages", sectionId: "pages-section" },
-  { label: "Fonts I Love", sectionId: "fonts-section" },
-  { label: "Books worth investing...", sectionId: "books-section" },
-  { label: "Hobbies", sectionId: "hobbies-section" },
-  { label: "Grooming", sectionId: "grooming-section" },
-  { label: "Fitness", sectionId: "fitness-section" },
-  { label: "Go out & explore", sectionId: "explore-section" },
+const navMenuItems: { label: string; sectionId: string; sectionKey: SectionKey }[] = [
+  { label: "Pages", sectionId: "pages-section", sectionKey: "pages" },
+  { label: "Fonts I Love", sectionId: "fonts-section", sectionKey: "fonts" },
+  { label: "Books worth investing...", sectionId: "books-section", sectionKey: "books" },
+  { label: "Hobbies", sectionId: "hobbies-section", sectionKey: "hobbies" },
+  { label: "Grooming", sectionId: "grooming-section", sectionKey: "grooming" },
+  { label: "Fitness", sectionId: "fitness-section", sectionKey: "fitness" },
+  { label: "Go out & explore", sectionId: "explore-section", sectionKey: "explore" },
 ];
 
-const pages = [
+const defaultPages: PageCard[] = [
   {
-    // title: "craftx",
     handle: "craftx",
     description: "Will help you\nin learning\n\"How to sell\"",
-    accent: "#163d22",
-    logo: craftx,
+    image: "/craftxImg.png",
   },
   {
-    title: "investing your time",
     handle: "storiesbyaradhana",
     description: "Always moving\npeople love\ninteresting things",
-    accent: "#2e4a39",
-    logo: CardImg2,
+    image: "/CardImg2.png",
   },
   {
-    title: "khushidevops",
     handle: "chaiaurvadapav",
     description: "Sharing life,\nworking vibe,\nfeeling alive",
-    accent: "#1f3b45",
-    logo: CardImg3,
+    image: "/CardImg3.png",
   },
 ];
 
-const fontCards = [
+const defaultFontCards: FontCard[] = [
   { name: "Averia Serif Libre" },
   { name: "Cabin" },
   { name: "" },
 ];
 
-const books = [
+const defaultBooks: BasicCard[] = [
   {
     title: "Deep Focus",
-    image:
-      book1
+    image: "/book1.jpg",
   },
   {
     title: "Goal Setting",
-    image:
-      book2
+    image: "/book2.jpg",
   },
   {
     title: "Focus on goals",
-    image:
-      book3
+    image: "/book3.jpg",
   },
   {
     title: "Build Systems",
-    image:
-      book4
+    image: "/book4.jpg",
   },
   {
     title: "Mindfulness",
-    image:
-      book5
+    image: "/book5.jpg",
   },
 ];
 
-const hobbies = [
+const defaultHobbies: BasicCard[] = [
   {
     title: "Guitar",
-    image:
-      guitar
+    image: "/guitar.png",
   },
   {
     title: "Rest",
-    image:
-      crochet,
+    image: "/crochet.png",
   },
 ];
 
-const grooming = [
+const defaultGrooming: BasicCard[] = [
   {
     title: "Skincare",
-    image:
-      groom1
+    image: "/groom1.jpg",
   },
   {
     title: "Hair",
-    image:
-      groom2,
+    image: "/groom2.jpg",
   },
   {
     title: "Nails",
-    image:
-      groom3,
+    image: "/groom3.jpg",
   },
   {
     title: "Smile",
-    image:
-      groom4,
+    image: "/groom4.jpg",
   },
   {
     title: "Makeup",
-    image:
-      groom5,
+    image: "/groom5.jpg",
   },
 ];
 
-const fitness = [
+const defaultFitness: BasicCard[] = [
   {
     title: "Yoga",
-    image:
-      fitness1
+    image: "/fitness1.jpg",
   },
   {
     title: "Stretch",
-    image:
-      fitness2
+    image: "/fitness2.jpg",
   },
   {
     title: "Pilates",
-    image:
-      fitness3
+    image: "/fitness3.jpg",
   },
   {
     title: "Cardio",
-    image:
-      fitness4
+    image: "/fitness4.jpg",
   },
 ];
 
-const explore = [
+const defaultExplore: BasicCard[] = [
   {
     title: "Starbucks",
-    image:
-      starbucks
+    image: "/starbucks.jpg",
   },
   {
     title: "Juhu + Flower Shop",
-    image:
-      flowerExplore
+    image: "/flower-explore.jpg",
   },
 ];
 
-const getFontClass = (fontName) => {
+const getFontClass = (fontName: string) => {
   switch (fontName.toLowerCase()) {
     case 'averia serif libre':
       return 'averia-serif-libre-regular';
@@ -239,15 +239,216 @@ const getFontClass = (fontName) => {
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeFormSection, setActiveFormSection] = useState<SectionKey | null>(null);
+  const [formData, setFormData] = useState<FormState>(emptyForm);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [pages, setPages] = useState<PageCard[]>(defaultPages);
+  const [fontCards, setFontCards] = useState<FontCard[]>(defaultFontCards);
+  const [books, setBooks] = useState<BasicCard[]>(defaultBooks);
+  const [hobbies, setHobbies] = useState<BasicCard[]>(defaultHobbies);
+  const [grooming, setGrooming] = useState<BasicCard[]>(defaultGrooming);
+  const [fitness, setFitness] = useState<BasicCard[]>(defaultFitness);
+  const [explore, setExplore] = useState<BasicCard[]>(defaultExplore);
 
-  const handleMenuSelect = (sectionId: string) => {
-    setIsMenuOpen(false);
-    const section = document.getElementById(sectionId);
-    section?.scrollIntoView({ behavior: "smooth", block: "start" });
+  useEffect(() => {
+    const loadEntries = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/entries`);
+        if (!response.ok) {
+          return;
+        }
+
+        const data: Partial<Record<SectionKey, ApiEntry[]>> = await response.json();
+
+        setPages([
+          ...defaultPages,
+          ...(data.pages ?? []).map((entry) => ({
+            id: entry.id,
+            handle: entry.handle ?? "",
+            description: entry.description ?? "",
+            image: entry.image ?? "",
+          })),
+        ]);
+        setFontCards([
+          ...defaultFontCards,
+          ...(data.fonts ?? []).map((entry) => ({
+            id: entry.id,
+            name: entry.name ?? "",
+          })),
+        ]);
+        setBooks([
+          ...defaultBooks,
+          ...(data.books ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          })),
+        ]);
+        setHobbies([
+          ...defaultHobbies,
+          ...(data.hobbies ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          })),
+        ]);
+        setGrooming([
+          ...defaultGrooming,
+          ...(data.grooming ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          })),
+        ]);
+        setFitness([
+          ...defaultFitness,
+          ...(data.fitness ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          })),
+        ]);
+        setExplore([
+          ...defaultExplore,
+          ...(data.explore ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          })),
+        ]);
+      } catch {
+      }
+    };
+
+    loadEntries();
+  }, []);
+
+  const openMenu = () => {
+    setIsMenuOpen(true);
+    setActiveFormSection(null);
+    setFormData(emptyForm);
+    setFormError("");
+  };
+
+  const handleMenuSelect = (sectionKey: SectionKey) => {
+    setActiveFormSection(sectionKey);
+    setFormData(emptyForm);
+    setFormError("");
+  };
+
+  const getSectionId = (sectionKey: SectionKey) => {
+    const section = navMenuItems.find((item) => item.sectionKey === sectionKey);
+    return section?.sectionId;
+  };
+
+  const submitEntry = async () => {
+    if (!activeFormSection) {
+      return;
+    }
+
+    const payload: ApiEntry = {};
+
+    if (activeFormSection === "pages") {
+      payload.image = formData.image.trim();
+      payload.handle = formData.handle.trim();
+      payload.description = formData.description.trim();
+      if (!payload.image || !payload.handle || !payload.description) {
+        setFormError("Image, handle and description are required.");
+        return;
+      }
+    }
+
+    if (activeFormSection === "fonts") {
+      payload.name = formData.name.trim();
+      if (!payload.name) {
+        setFormError("Font name is required.");
+        return;
+      }
+    }
+
+    if (["books", "hobbies", "grooming", "fitness", "explore"].includes(activeFormSection)) {
+      payload.title = formData.title.trim();
+      payload.image = formData.image.trim();
+      if (!payload.title || !payload.image) {
+        setFormError("Title and image are required.");
+        return;
+      }
+    }
+
+    setIsSaving(true);
+    setFormError("");
+
+    try {
+      const response = await fetch(`${API_BASE}/api/entries/${activeFormSection}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const createdEntry: ApiEntry & { error?: string } = await response.json();
+      if (!response.ok) {
+        setFormError(createdEntry.error || "Failed to save entry.");
+        setIsSaving(false);
+        return;
+      }
+
+      if (activeFormSection === "pages") {
+        setPages((prev) => [
+          ...prev,
+          {
+            id: createdEntry.id,
+            handle: createdEntry.handle ?? "",
+            description: createdEntry.description ?? "",
+            image: createdEntry.image ?? "",
+          },
+        ]);
+      }
+
+      if (activeFormSection === "fonts") {
+        setFontCards((prev) => [
+          ...prev,
+          {
+            id: createdEntry.id,
+            name: createdEntry.name ?? "",
+          },
+        ]);
+      }
+
+      if (activeFormSection === "books") {
+        setBooks((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+      }
+      if (activeFormSection === "hobbies") {
+        setHobbies((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+      }
+      if (activeFormSection === "grooming") {
+        setGrooming((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+      }
+      if (activeFormSection === "fitness") {
+        setFitness((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+      }
+      if (activeFormSection === "explore") {
+        setExplore((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+      }
+
+      const sectionId = getSectionId(activeFormSection);
+      setIsMenuOpen(false);
+      setActiveFormSection(null);
+      setFormData(emptyForm);
+      if (sectionId) {
+        setTimeout(() => {
+          document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 120);
+      }
+    } catch {
+      setFormError("Failed to connect to backend.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
-    <div className="min-h-[100svh] w-full overflow-x-hidden overflow-y-auto bg-black px-2 sm:px-4">
+    <div className="min-h-[100svh] w-screen overflow-x-hidden overflow-y-auto bg-black px-2 sm:px-4">
 
       <motion.div
         className="relative mx-auto w-full bg-[#fbfbfb] px-3 sm:px-4 pb-10 pt-5 sm:max-w-[440px] max-w-full overflow-hidden"
@@ -271,7 +472,7 @@ export default function Home() {
               type="button"
               className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-900 text-white shadow-[0_6px_16px_rgba(0,0,0,0.18)] flex-shrink-0"
               aria-label="Add"
-              onClick={() => setIsMenuOpen(true)}
+              onClick={openMenu}
             >
               <PlusIcon />
             </button>
@@ -343,21 +544,15 @@ export default function Home() {
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-5">
                 {pages.map((page, index) => (
                   <Link
-                    key={page.handle}
+                    key={page.id ?? `${page.handle}-${index}`}
                     href="#"
                     className="min-w-[calc(100vw-120px)] sm:min-w-[200px] snap-start rounded-[32px] bg-white px-3 py-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] flex-shrink-0 flex items-center gap-6"
                   >
                     <div className={`relative flex-shrink-0 overflow-hidden rounded-[24px] ${index === 0 || index === 2 ? 'h-42 w-36' : 'h-40 w-32'}`}>
-                      <Image
-                        src={page.logo}
-                        alt={page.title ?? page.handle}
-                        fill
-                        className="object-cover"
-                        sizes="128px"
-                      />
+                      <img src={page.image} alt={page.handle} className="h-full w-full object-cover" />
                     </div>
                     <div className="flex flex-1 items-center gap-4 min-w-0">
-                      <Image src={arrowImg} alt="Arrow" className="h-16 w-16 flex-shrink-0" />
+                      <img src="/arrow.png" alt="Arrow" className="h-16 w-16 flex-shrink-0" />
                       <div className="flex flex-col gap-3 min-w-0 overflow-hidden">
                         <div className="capriola-regular flex items-center text-sm gap-2 flex-shrink-0">
                           <svg
@@ -417,16 +612,14 @@ export default function Home() {
               <div className="flex gap-6 pr-4 my-10">
                 {books.map((book) => (
                   <Link
-                    key={book.title}
+                    key={book.id ?? book.title}
                     href="#"
                     className="snap-start transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] flex-shrink-0"
                   >
-                    <Image
+                    <img
                       src={book.image}
                       alt={book.title}
-                      className="w-[170px] h-[210px] rounded-[30px] object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] "
-                      width={170}
-                      height={210}
+                      className="h-[210px] w-[170px] rounded-[30px] object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)]"
                     />
                   </Link>
                 ))}
@@ -442,16 +635,14 @@ export default function Home() {
               <div className="flex snap-x snap-mandatory gap-7 pr-2">
                 {hobbies.map((hobby) => (
                   <Link
-                    key={hobby.title}
+                    key={hobby.id ?? hobby.title}
                     href="#"
                     className="w-[400px] my-10 snap-start rounded-[30px] bg-white p-1.5 sm:p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)]  transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
-                    <Image
+                    <img
                       src={hobby.image}
                       alt={hobby.title}
                       className="h-60 w-full rounded-[27px] object-cover"
-                      width={360}
-                      height={200}
                     />
                   </Link>
                 ))}
@@ -467,11 +658,11 @@ export default function Home() {
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-4">
                 {grooming.map((item) => (
                   <Link
-                    key={item.title}
+                    key={item.id ?? item.title}
                     href="#"
                     className="min-w-[98px] sm:min-w-[110px] snap-start rounded-[20px] bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
-                    <Image
+                    <img
                       src={item.image}
                       alt={item.title}
                       className="h-[130px] sm:h-[140px] w-full rounded-[18px] object-cover"
@@ -490,11 +681,11 @@ export default function Home() {
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-4">
                 {fitness.map((item) => (
                   <Link
-                    key={item.title}
+                    key={item.id ?? item.title}
                     href="#"
                     className="w-[120px] snap-start rounded-[20px] bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
-                    <Image
+                    <img
                       src={item.image}
                       alt={item.title}
                       className="h-[160px] w-full rounded-[18px] object-cover"
@@ -513,11 +704,11 @@ export default function Home() {
               <div className="flex snap-x snap-mandatory gap-6 pr-4 my-4">
                 {explore.map((spot) => (
                   <Link
-                    key={spot.title}
+                    key={spot.id ?? spot.title}
                     href="#"
                     className="min-w-[300px] sm:min-w-[360px] snap-start rounded-[38px] bg-white p-2.5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
-                    <Image
+                    <img
                       src={spot.image}
                       alt={spot.title}
                       className="h-[210px] w-full rounded-[32px] object-cover"
@@ -535,24 +726,127 @@ export default function Home() {
         {isMenuOpen && (
           <div className="absolute inset-0 z-50 bg-black/20" onClick={() => setIsMenuOpen(false)}>
             <div
-              className="absolute right-3 top-3 w-[min(88vw,320px)] rounded-[14px] bg-white px-5 py-4 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.30)] sm:right-4 sm:top-4"
+              className="absolute right-3 top-3 w-[min(88vw,360px)] rounded-[14px] bg-white px-5 py-4 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.30)] sm:right-4 sm:top-4"
               onClick={(event) => event.stopPropagation()}
             >
-              {navMenuItems.map((item, index) => (
-                <button
-                  key={item.sectionId}
-                  type="button"
-                  className={`flex w-full items-center justify-between py-4 text-left text-xl leading-[0.95] mooli-regular text-zinc-900 ${
-                    index < navMenuItems.length - 1 ? "border-b border-zinc-300" : ""
-                  }`}
-                  onClick={() => handleMenuSelect(item.sectionId)}
-                >
-                  <span>{item.label}</span>
-                  <span className="ml-6 flex-shrink-0 ">
-                    <MenuArrowIcon />
-                  </span>
-                </button>
-              ))}
+              {!activeFormSection ? (
+                <>
+                  {navMenuItems.map((item, index) => (
+                    <button
+                      key={item.sectionId}
+                      type="button"
+                      className={`flex w-full items-center justify-between py-4 text-left text-xl leading-[0.95] mooli-regular text-zinc-900 ${
+                        index < navMenuItems.length - 1 ? "border-b border-zinc-300" : ""
+                      }`}
+                      onClick={() => handleMenuSelect(item.sectionKey)}
+                    >
+                      <span>{item.label}</span>
+                      <span className="ml-6 flex-shrink-0 ">
+                        <MenuArrowIcon />
+                      </span>
+                    </button>
+                  ))}
+                </>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="button"
+                      className="rounded-full border border-zinc-300 px-3 py-1 text-sm mooli-regular"
+                      onClick={() => setActiveFormSection(null)}
+                    >
+                      Back
+                    </button>
+                    <h3 className="mooli-regular text-lg text-zinc-900">Add in {navMenuItems.find((item) => item.sectionKey === activeFormSection)?.label}</h3>
+                  </div>
+
+                  {activeFormSection === "pages" && (
+                    <>
+                      <input
+                        value={formData.image}
+                        onChange={(event) => setFormData((prev) => ({ ...prev, image: event.target.value }))}
+                        placeholder="Image URL"
+                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+                      />
+                      <input
+                        value={formData.handle}
+                        onChange={(event) => setFormData((prev) => ({ ...prev, handle: event.target.value }))}
+                        placeholder="Handle"
+                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+                      />
+                      <textarea
+                        value={formData.description}
+                        onChange={(event) => setFormData((prev) => ({ ...prev, description: event.target.value }))}
+                        placeholder="Description"
+                        rows={3}
+                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+                      />
+                    </>
+                  )}
+
+                  {activeFormSection === "fonts" && (
+                    <input
+                      value={formData.name}
+                      onChange={(event) => setFormData((prev) => ({ ...prev, name: event.target.value }))}
+                      placeholder="Font Name"
+                      className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+                    />
+                  )}
+
+                  {["books", "hobbies", "grooming", "fitness", "explore"].includes(activeFormSection) && (
+                    <>
+                      <input
+                        value={formData.title}
+                        onChange={(event) => setFormData((prev) => ({ ...prev, title: event.target.value }))}
+                        placeholder="Title"
+                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+                      />
+                      <input
+                        value={formData.image}
+                        onChange={(event) => setFormData((prev) => ({ ...prev, image: event.target.value }))}
+                        placeholder="Image URL"
+                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+                      />
+                    </>
+                  )}
+
+                  <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-3">
+                    <p className="mb-2 text-xs uppercase tracking-wide text-zinc-500">Preview</p>
+
+                    {activeFormSection === "pages" && (
+                      <div className="rounded-2xl bg-white p-3 shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
+                        <img src={formData.image || "/craftxImg.png"} alt="Preview" className="h-28 w-full rounded-xl object-cover" />
+                        <p className="mt-2 text-sm capriola-regular">@{formData.handle || "yourhandle"}</p>
+                        <p className="mt-1 whitespace-pre-line text-xs text-zinc-600">{formData.description || "Your description preview"}</p>
+                      </div>
+                    )}
+
+                    {activeFormSection === "fonts" && (
+                      <div className="flex h-24 items-center justify-center rounded-2xl bg-white text-2xl shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
+                        <span className={getFontClass(formData.name || "")}>{formData.name || "Font Preview"}</span>
+                      </div>
+                    )}
+
+                    {["books", "hobbies", "grooming", "fitness", "explore"].includes(activeFormSection) && (
+                      <div className="rounded-2xl bg-white p-2 shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
+                        <img src={formData.image || "/ProfileCardImg.jpg"} alt="Preview" className="h-36 w-full rounded-xl object-cover" />
+                        <p className="mt-2 text-sm mooli-regular text-zinc-800">{formData.title || "Card title"}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {formError && <p className="text-sm text-red-600">{formError}</p>}
+
+                  <button
+                    type="button"
+                    onClick={submitEntry}
+                    disabled={isSaving}
+                    className="w-full rounded-xl bg-zinc-900 py-2.5 text-sm text-white disabled:opacity-60"
+                  >
+                    {isSaving ? "Saving..." : "Submit"}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
