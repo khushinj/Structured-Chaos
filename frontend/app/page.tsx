@@ -272,7 +272,7 @@ export default function Home() {
                 Khushi Joshi
               </h1>
               <p className="text-sm inter-regular text-[#787878]">Digital Architect</p>
-              <p className="mt-3 text-xs karla-regular line-clamp-2">
+              <p className="mt-3 text-sm karla-regular line-clamp-2">
                 Designing my own operating system for growth.
               </p>
             </div>
@@ -482,7 +482,7 @@ export default function Home() {
                   <Link
                     key={spot.title}
                     href="#"
-                    className="min-w-[300px] sm:min-w-[360px] snap-start rounded-[38px] bg-white p-2.5 shadow-[0_20px_60px_15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    className="min-w-[300px] sm:min-w-[360px] snap-start rounded-[38px] bg-white p-2.5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
                     <Image
                       src={spot.image}
