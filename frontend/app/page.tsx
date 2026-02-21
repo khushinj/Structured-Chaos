@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -43,13 +44,26 @@ const HomeIcon = () => (
 const PlusIcon = () => (
   <svg
     viewBox="0 0 24 24"
-    className="h-4 w-4"
+    className="h-6 w-6"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
   >
     <path d="M12 5v14" />
     <path d="M5 12h14" />
+  </svg>
+);
+
+const MenuArrowIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    className="h-7 w-7"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M10 8l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -66,6 +80,16 @@ const fadeItem = {
   hidden: { opacity: 0, y: 8 },
   show: { opacity: 1, y: 0, transition: { duration: 0.22 } },
 };
+
+const navMenuItems = [
+  { label: "Pages", sectionId: "pages-section" },
+  { label: "Fonts I Love", sectionId: "fonts-section" },
+  { label: "Books worth investing...", sectionId: "books-section" },
+  { label: "Hobbies", sectionId: "hobbies-section" },
+  { label: "Grooming", sectionId: "grooming-section" },
+  { label: "Fitness", sectionId: "fitness-section" },
+  { label: "Go out & explore", sectionId: "explore-section" },
+];
 
 const pages = [
   {
@@ -214,11 +238,19 @@ const getFontClass = (fontName) => {
 };
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMenuSelect = (sectionId: string) => {
+    setIsMenuOpen(false);
+    const section = document.getElementById(sectionId);
+    section?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="min-h-[100svh] w-full overflow-x-hidden overflow-y-auto bg-black px-2 sm:px-4">
 
       <motion.div
-        className="mx-auto w-full bg-[#fbfbfb] px-3 sm:px-4 pb-10 pt-5 sm:max-w-[440px] max-w-full overflow-hidden"
+        className="relative mx-auto w-full bg-[#fbfbfb] px-3 sm:px-4 pb-10 pt-5 sm:max-w-[440px] max-w-full overflow-hidden"
         variants={fadeContainer}
         initial="hidden"
         animate="show"
@@ -237,8 +269,9 @@ export default function Home() {
             </button>
             <button
               type="button"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-900 text-white shadow-[0_6px_16px_rgba(0,0,0,0.18)] flex-shrink-0"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-900 text-white shadow-[0_6px_16px_rgba(0,0,0,0.18)] flex-shrink-0"
               aria-label="Add"
+              onClick={() => setIsMenuOpen(true)}
             >
               <PlusIcon />
             </button>
@@ -278,7 +311,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          <motion.section className="flex flex-col gap-3 my-8 sm:my-10" variants={fadeItem}>
+          <motion.section id="pages-section" className="flex flex-col gap-3 my-8 sm:my-10" variants={fadeItem}>
             <div className="flex items-center justify-between gap-2">
               <h2 className="happy-monkey-regular text-4xl flex-shrink-0">
                 Pages
@@ -306,7 +339,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="-mx-4 overflow-x-auto px-9 no-scrollbar scroll-smooth">
+            <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-5">
                 {pages.map((page, index) => (
                   <Link
@@ -357,7 +390,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          <motion.section className="flex flex-col gap-4" variants={fadeItem}>
+          <motion.section id="fonts-section" className="flex flex-col gap-4" variants={fadeItem}>
             <h2 className="happy-monkey-regular text-4xl">
               Fonts I love
             </h2>
@@ -376,7 +409,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          <motion.section className="flex flex-col gap-6 mt-6" variants={fadeItem}>
+          <motion.section id="books-section" className="flex flex-col gap-6 mt-6" variants={fadeItem}>
             <h2 className="happy-monkey-regular text-4xl leading-tight tracking-tight">
               Books worth investing Time
             </h2>
@@ -401,7 +434,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          <motion.section className="flex flex-col gap-3" variants={fadeItem}>
+          <motion.section id="hobbies-section" className="flex flex-col gap-3" variants={fadeItem}>
             <h2 className="happy-monkey-regular text-4xl">
               Hobbies
             </h2>
@@ -426,7 +459,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          <motion.section className="flex flex-col gap-3 mb-10" variants={fadeItem}>
+          <motion.section id="grooming-section" className="flex flex-col gap-3 mb-10" variants={fadeItem}>
             <h2 className="happy-monkey-regular text-4xl leading-tight mt-2">
               Grooming
             </h2>
@@ -449,7 +482,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          <motion.section className="flex flex-col gap-3 mb-10" variants={fadeItem}>
+          <motion.section id="fitness-section" className="flex flex-col gap-3 mb-10" variants={fadeItem}>
             <h2 className="happy-monkey-regular text-4xl leading-tight mt-2">
               Fitness
             </h2>
@@ -472,7 +505,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          <motion.section className="flex flex-col gap-3" variants={fadeItem}>
+          <motion.section id="explore-section" className="flex flex-col gap-3" variants={fadeItem}>
             <h2 className="happy-monkey-regular text-4xl leading-tight mt-4">
               Go out and explore..
             </h2>
@@ -498,6 +531,31 @@ export default function Home() {
             </div>
           </motion.section>
         </div>
+
+        {isMenuOpen && (
+          <div className="absolute inset-0 z-50 bg-black/20" onClick={() => setIsMenuOpen(false)}>
+            <div
+              className="absolute right-3 top-3 w-[min(88vw,320px)] rounded-[14px] bg-white px-5 py-4 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.30)] sm:right-4 sm:top-4"
+              onClick={(event) => event.stopPropagation()}
+            >
+              {navMenuItems.map((item, index) => (
+                <button
+                  key={item.sectionId}
+                  type="button"
+                  className={`flex w-full items-center justify-between py-4 text-left text-xl leading-[0.95] mooli-regular text-zinc-900 ${
+                    index < navMenuItems.length - 1 ? "border-b border-zinc-300" : ""
+                  }`}
+                  onClick={() => handleMenuSelect(item.sectionId)}
+                >
+                  <span>{item.label}</span>
+                  <span className="ml-6 flex-shrink-0 ">
+                    <MenuArrowIcon />
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </motion.div>
     </div>
   );
