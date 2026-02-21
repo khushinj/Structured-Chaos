@@ -60,6 +60,24 @@
   font-style: normal;
 }
 
+.averia-serif-libre-regular {
+  font-family: var(--font-averia-serif-libre), serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.averia-serif-libre-bold {
+  font-family: var(--font-averia-serif-libre), serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.mooli-regular {
+  font-family: var(--font-mooli), sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 
 
 /* 
