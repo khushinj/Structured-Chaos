@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -26,7 +26,6 @@ type BasicCard = {
 
 type FormState = {
   title: string;
-  image: string;
   description: string;
   handle: string;
   name: string;
@@ -45,7 +44,6 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
 const emptyForm: FormState = {
   title: "",
-  image: "",
   description: "",
   handle: "",
   name: "",
@@ -238,9 +236,12 @@ const getFontClass = (fontName: string) => {
 };
 
 export default function Home() {
+  const imagePreviewUrlRef = useRef<string>("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeFormSection, setActiveFormSection] = useState<SectionKey | null>(null);
   const [formData, setFormData] = useState<FormState>(emptyForm);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [formError, setFormError] = useState("");
   const [pages, setPages] = useState<PageCard[]>(defaultPages);
@@ -261,62 +262,49 @@ export default function Home() {
 
         const data: Partial<Record<SectionKey, ApiEntry[]>> = await response.json();
 
-        setPages([
-          ...defaultPages,
-          ...(data.pages ?? []).map((entry) => ({
-            id: entry.id,
-            handle: entry.handle ?? "",
-            description: entry.description ?? "",
-            image: entry.image ?? "",
-          })),
-        ]);
-        setFontCards([
-          ...defaultFontCards,
-          ...(data.fonts ?? []).map((entry) => ({
-            id: entry.id,
-            name: entry.name ?? "",
-          })),
-        ]);
-        setBooks([
-          ...defaultBooks,
-          ...(data.books ?? []).map((entry) => ({
-            id: entry.id,
-            title: entry.title ?? "",
-            image: entry.image ?? "",
-          })),
-        ]);
-        setHobbies([
-          ...defaultHobbies,
-          ...(data.hobbies ?? []).map((entry) => ({
-            id: entry.id,
-            title: entry.title ?? "",
-            image: entry.image ?? "",
-          })),
-        ]);
-        setGrooming([
-          ...defaultGrooming,
-          ...(data.grooming ?? []).map((entry) => ({
-            id: entry.id,
-            title: entry.title ?? "",
-            image: entry.image ?? "",
-          })),
-        ]);
-        setFitness([
-          ...defaultFitness,
-          ...(data.fitness ?? []).map((entry) => ({
-            id: entry.id,
-            title: entry.title ?? "",
-            image: entry.image ?? "",
-          })),
-        ]);
-        setExplore([
-          ...defaultExplore,
-          ...(data.explore ?? []).map((entry) => ({
-            id: entry.id,
-            title: entry.title ?? "",
-            image: entry.image ?? "",
-          })),
-        ]);
+        const pagesFromApi = (data.pages ?? []).map((entry) => ({
+          id: entry.id,
+          handle: entry.handle ?? "",
+          description: entry.description ?? "",
+          image: entry.image ?? "",
+        }));
+        const fontsFromApi = (data.fonts ?? []).map((entry) => ({
+          id: entry.id,
+          name: entry.name ?? "",
+        }));
+        const booksFromApi = (data.books ?? []).map((entry) => ({
+          id: entry.id,
+          title: entry.title ?? "",
+          image: entry.image ?? "",
+        }));
+        const hobbiesFromApi = (data.hobbies ?? []).map((entry) => ({
+          id: entry.id,
+          title: entry.title ?? "",
+          image: entry.image ?? "",
+        }));
+        const groomingFromApi = (data.grooming ?? []).map((entry) => ({
+          id: entry.id,
+          title: entry.title ?? "",
+          image: entry.image ?? "",
+        }));
+        const fitnessFromApi = (data.fitness ?? []).map((entry) => ({
+          id: entry.id,
+          title: entry.title ?? "",
+          image: entry.image ?? "",
+        }));
+        const exploreFromApi = (data.explore ?? []).map((entry) => ({
+          id: entry.id,
+          title: entry.title ?? "",
+          image: entry.image ?? "",
+        }));
+
+        setPages(pagesFromApi.length > 0 ? pagesFromApi : defaultPages);
+        setFontCards(fontsFromApi.length > 0 ? fontsFromApi : defaultFontCards);
+        setBooks(booksFromApi.length > 0 ? booksFromApi : defaultBooks);
+        setHobbies(hobbiesFromApi.length > 0 ? hobbiesFromApi : defaultHobbies);
+        setGrooming(groomingFromApi.length > 0 ? groomingFromApi : defaultGrooming);
+        setFitness(fitnessFromApi.length > 0 ? fitnessFromApi : defaultFitness);
+        setExplore(exploreFromApi.length > 0 ? exploreFromApi : defaultExplore);
       } catch {
       }
     };
@@ -324,17 +312,56 @@ export default function Home() {
     loadEntries();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrlRef.current) {
+        URL.revokeObjectURL(imagePreviewUrlRef.current);
+      }
+    };
+  }, []);
+
+  const resetImageSelection = () => {
+    if (imagePreviewUrlRef.current) {
+      URL.revokeObjectURL(imagePreviewUrlRef.current);
+      imagePreviewUrlRef.current = "";
+    }
+    setSelectedImage(null);
+    setImagePreview("");
+  };
+
   const openMenu = () => {
     setIsMenuOpen(true);
     setActiveFormSection(null);
     setFormData(emptyForm);
+    resetImageSelection();
     setFormError("");
   };
 
   const handleMenuSelect = (sectionKey: SectionKey) => {
     setActiveFormSection(sectionKey);
     setFormData(emptyForm);
+    resetImageSelection();
     setFormError("");
+  };
+
+  const handleImageSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+
+    if (imagePreviewUrlRef.current) {
+      URL.revokeObjectURL(imagePreviewUrlRef.current);
+      imagePreviewUrlRef.current = "";
+    }
+
+    if (!file) {
+      setSelectedImage(null);
+      setImagePreview("");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    imagePreviewUrlRef.current = previewUrl;
+    setSelectedImage(file);
+    setImagePreview(previewUrl);
   };
 
   const getSectionId = (sectionKey: SectionKey) => {
@@ -347,33 +374,40 @@ export default function Home() {
       return;
     }
 
-    const payload: ApiEntry = {};
+    const payload = new FormData();
 
     if (activeFormSection === "pages") {
-      payload.image = formData.image.trim();
-      payload.handle = formData.handle.trim();
-      payload.description = formData.description.trim();
-      if (!payload.image || !payload.handle || !payload.description) {
+      const handle = formData.handle.trim();
+      const description = formData.description.trim();
+      if (!selectedImage || !handle || !description) {
         setFormError("Image, handle and description are required.");
         return;
       }
+
+      payload.append("handle", handle);
+      payload.append("description", description);
+      payload.append("image", selectedImage);
     }
 
     if (activeFormSection === "fonts") {
-      payload.name = formData.name.trim();
-      if (!payload.name) {
+      const name = formData.name.trim();
+      if (!name) {
         setFormError("Font name is required.");
         return;
       }
+
+      payload.append("name", name);
     }
 
     if (["books", "hobbies", "grooming", "fitness", "explore"].includes(activeFormSection)) {
-      payload.title = formData.title.trim();
-      payload.image = formData.image.trim();
-      if (!payload.title || !payload.image) {
+      const title = formData.title.trim();
+      if (!title || !selectedImage) {
         setFormError("Title and image are required.");
         return;
       }
+
+      payload.append("title", title);
+      payload.append("image", selectedImage);
     }
 
     setIsSaving(true);
@@ -382,11 +416,10 @@ export default function Home() {
     try {
       const response = await fetch(`${API_BASE}/api/entries/${activeFormSection}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: payload,
       });
 
-      const createdEntry: ApiEntry & { error?: string } = await response.json();
+      const createdEntry: ApiEntry & { error?: string } = await response.json().catch(() => ({ error: "Failed to save entry." }));
       if (!response.ok) {
         setFormError(createdEntry.error || "Failed to save entry.");
         setIsSaving(false);
@@ -435,6 +468,7 @@ export default function Home() {
       setIsMenuOpen(false);
       setActiveFormSection(null);
       setFormData(emptyForm);
+      resetImageSelection();
       if (sectionId) {
         setTimeout(() => {
           document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -763,11 +797,12 @@ export default function Home() {
                   {activeFormSection === "pages" && (
                     <>
                       <input
-                        value={formData.image}
-                        onChange={(event) => setFormData((prev) => ({ ...prev, image: event.target.value }))}
-                        placeholder="Image URL"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelection}
                         className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
                       />
+                      {selectedImage && <p className="text-xs text-zinc-600">Selected: {selectedImage.name}</p>}
                       <input
                         value={formData.handle}
                         onChange={(event) => setFormData((prev) => ({ ...prev, handle: event.target.value }))}
@@ -802,11 +837,12 @@ export default function Home() {
                         className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
                       />
                       <input
-                        value={formData.image}
-                        onChange={(event) => setFormData((prev) => ({ ...prev, image: event.target.value }))}
-                        placeholder="Image URL"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelection}
                         className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
                       />
+                      {selectedImage && <p className="text-xs text-zinc-600">Selected: {selectedImage.name}</p>}
                     </>
                   )}
 
@@ -815,7 +851,7 @@ export default function Home() {
 
                     {activeFormSection === "pages" && (
                       <div className="rounded-2xl bg-white p-3 shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
-                        <img src={formData.image || "/craftxImg.png"} alt="Preview" className="h-28 w-full rounded-xl object-cover" />
+                        <img src={imagePreview || "/craftxImg.png"} alt="Preview" className="h-28 w-full rounded-xl object-cover" />
                         <p className="mt-2 text-sm capriola-regular">@{formData.handle || "yourhandle"}</p>
                         <p className="mt-1 whitespace-pre-line text-xs text-zinc-600">{formData.description || "Your description preview"}</p>
                       </div>
@@ -829,7 +865,7 @@ export default function Home() {
 
                     {["books", "hobbies", "grooming", "fitness", "explore"].includes(activeFormSection) && (
                       <div className="rounded-2xl bg-white p-2 shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
-                        <img src={formData.image || "/ProfileCardImg.jpg"} alt="Preview" className="h-36 w-full rounded-xl object-cover" />
+                        <img src={imagePreview || "/ProfileCardImg.jpg"} alt="Preview" className="h-36 w-full rounded-xl object-cover" />
                         <p className="mt-2 text-sm mooli-regular text-zinc-800">{formData.title || "Card title"}</p>
                       </div>
                     )}
