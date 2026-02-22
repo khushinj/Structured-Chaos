@@ -67,3 +67,19 @@ npm run migrate:cloudinary
 ```
 
 This uploads existing image paths from DB to Cloudinary and replaces each `image` field with its Cloudinary secure URL.
+
+## Render backend deployment (important)
+
+Use these exact backend service settings on Render:
+
+- Root Directory: `backend`
+- Build Command: `npm ci && npm run build`
+- Start Command: `npm start`
+
+If you ever see `Cannot find module 'cloudinary'` in Render logs:
+
+1. Verify your service root is `backend`.
+2. Change start command to `npm start` (do not use `npm run dev` in production).
+3. Click **Clear build cache & deploy** in Render.
+
+You can also deploy using the repo blueprint at `render.yaml` (recommended), which locks the correct build/start configuration.

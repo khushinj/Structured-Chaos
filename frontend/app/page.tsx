@@ -141,6 +141,7 @@ export default function Home() {
   const [imagePreview, setImagePreview] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [formError, setFormError] = useState("");
+  const [loadError, setLoadError] = useState("");
   const [pages, setPages] = useState<PageCard[]>(defaultPages);
   const [fontCards, setFontCards] = useState<FontCard[]>(defaultFontCards);
   const [books, setBooks] = useState<BasicCard[]>(defaultBooks);
@@ -152,48 +153,83 @@ export default function Home() {
   useEffect(() => {
     const loadEntries = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/entries`);
-        if (!response.ok) {
+        const [
+          pagesResponse,
+          fontsResponse,
+          booksResponse,
+          hobbiesResponse,
+          groomingResponse,
+          fitnessResponse,
+          exploreResponse,
+        ] = await Promise.all([
+          fetch(`${API_BASE}/api/entries/pages`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/fonts`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/books`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/hobbies`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/grooming`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/fitness`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/explore`, { cache: "no-store" }),
+        ]);
+
+        if (
+          !pagesResponse.ok ||
+          !fontsResponse.ok ||
+          !booksResponse.ok ||
+          !hobbiesResponse.ok ||
+          !groomingResponse.ok ||
+          !fitnessResponse.ok ||
+          !exploreResponse.ok
+        ) {
+          setLoadError("Could not load cards from backend. Check backend URL/CORS and try again.");
           return;
         }
 
-        const data: Partial<Record<SectionKey, ApiEntry[]>> = await response.json();
+        const [pagesData, fontsData, booksData, hobbiesData, groomingData, fitnessData, exploreData]: ApiEntry[][] =
+          await Promise.all([
+            pagesResponse.json(),
+            fontsResponse.json(),
+            booksResponse.json(),
+            hobbiesResponse.json(),
+            groomingResponse.json(),
+            fitnessResponse.json(),
+            exploreResponse.json(),
+          ]);
 
-        const pagesFromApi = (data.pages ?? []).map((entry) => ({
-          id: entry.id,
-          handle: entry.handle ?? "",
-          description: entry.description ?? "",
-          image: entry.image ?? "",
-        }));
-        const fontsFromApi = (data.fonts ?? []).map((entry) => ({
-          id: entry.id,
-          name: entry.name ?? "",
-        }));
-        const booksFromApi = (data.books ?? []).map((entry) => ({
-          id: entry.id,
-          title: entry.title ?? "",
-          image: entry.image ?? "",
-        }));
-        const hobbiesFromApi = (data.hobbies ?? []).map((entry) => ({
-          id: entry.id,
-          title: entry.title ?? "",
-          image: entry.image ?? "",
-        }));
-        const groomingFromApi = (data.grooming ?? []).map((entry) => ({
-          id: entry.id,
-          title: entry.title ?? "",
-          image: entry.image ?? "",
-        }));
-        const fitnessFromApi = (data.fitness ?? []).map((entry) => ({
-          id: entry.id,
-          title: entry.title ?? "",
-          image: entry.image ?? "",
-        }));
-        const exploreFromApi = (data.explore ?? []).map((entry) => ({
-          id: entry.id,
-          title: entry.title ?? "",
-          image: entry.image ?? "",
-        }));
+          const pagesFromApi = (pagesData ?? []).map((entry) => ({
+            id: entry.id,
+            handle: entry.handle ?? "",
+            description: entry.description ?? "",
+            image: entry.image ?? "",
+          }));
+          const fontsFromApi = (fontsData ?? []).map((entry) => ({
+            id: entry.id,
+            name: entry.name ?? "",
+          }));
+          const booksFromApi = (booksData ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          }));
+          const hobbiesFromApi = (hobbiesData ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          }));
+          const groomingFromApi = (groomingData ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          }));
+          const fitnessFromApi = (fitnessData ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          }));
+          const exploreFromApi = (exploreData ?? []).map((entry) => ({
+            id: entry.id,
+            title: entry.title ?? "",
+            image: entry.image ?? "",
+          }));
 
         setPages(pagesFromApi);
         setFontCards(fontsFromApi);
@@ -202,7 +238,9 @@ export default function Home() {
         setGrooming(groomingFromApi);
         setFitness(fitnessFromApi);
         setExplore(exploreFromApi);
+        setLoadError("");
       } catch {
+        setLoadError("Could not load cards from backend. Check backend URL/CORS and try again.");
       }
     };
 
@@ -415,6 +453,12 @@ export default function Home() {
               className="w-full rounded-full border border-zinc-200/70 bg-white px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm shadow-[0_8px_18px_rgba(0,0,0,0.08)] focus:outline-none"
             />
           </motion.div>
+
+          {loadError && (
+            <motion.p className="text-xs text-red-600 px-1" variants={fadeItem}>
+              {loadError}
+            </motion.p>
+          )}
 
           <motion.section
             className="rounded-[49px] min-h-[320px] bg-[#FFFDFD] pb-3 px-2 mt-7 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] overflow-hidden"

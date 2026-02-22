@@ -57,6 +57,33 @@ router.get("/", async (_req, res, next) => {
 	}
 });
 
+router.get("/:section", async (req, res, next) => {
+	try {
+		const { section } = req.params;
+
+		if (!allowedSections.includes(section)) {
+			return res.status(400).json({ error: "Invalid section" });
+		}
+
+		const model = sectionModels[section];
+		const entries = await model.find({}).sort({ createdAt: 1 }).lean();
+
+		return res.json(
+			entries.map((entry) => ({
+				id: String(entry._id),
+				title: entry.title,
+				image: entry.image,
+				description: entry.description,
+				handle: entry.handle,
+				name: entry.name,
+				createdAt: entry.createdAt,
+			}))
+		);
+	} catch (error) {
+		next(error);
+	}
+});
+
 router.post("/:section", upload.single("image"), async (req, res, next) => {
 	try {
 		const { section } = req.params;
