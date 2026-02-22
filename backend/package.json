@@ -6,6 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon server.js",
+    "build": "echo 'No build step required for backend'",
     "start": "node server.js",
     "migrate:cloudinary": "node scripts/migrateImagesToCloudinary.js"
   },
