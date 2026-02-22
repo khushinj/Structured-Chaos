@@ -40,7 +40,7 @@ type ApiEntry = {
   name?: string;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://structuredchaos.onrender.com";
 
 const emptyForm: FormState = {
   title: "",
@@ -113,116 +113,13 @@ const navMenuItems: { label: string; sectionId: string; sectionKey: SectionKey }
   { label: "Go out & explore", sectionId: "explore-section", sectionKey: "explore" },
 ];
 
-const defaultPages: PageCard[] = [
-  {
-    handle: "craftx",
-    description: "Will help you\nin learning\n\"How to sell\"",
-    image: "/craftxImg.png",
-  },
-  {
-    handle: "storiesbyaradhana",
-    description: "Always moving\npeople love\ninteresting things",
-    image: "/CardImg2.png",
-  },
-  {
-    handle: "chaiaurvadapav",
-    description: "Sharing life,\nworking vibe,\nfeeling alive",
-    image: "/CardImg3.png",
-  },
-];
-
-const defaultFontCards: FontCard[] = [
-  { name: "Averia Serif Libre" },
-  { name: "Cabin" },
-  { name: "" },
-];
-
-const defaultBooks: BasicCard[] = [
-  {
-    title: "Deep Focus",
-    image: "/book1.jpg",
-  },
-  {
-    title: "Goal Setting",
-    image: "/book2.jpg",
-  },
-  {
-    title: "Focus on goals",
-    image: "/book3.jpg",
-  },
-  {
-    title: "Build Systems",
-    image: "/book4.jpg",
-  },
-  {
-    title: "Mindfulness",
-    image: "/book5.jpg",
-  },
-];
-
-const defaultHobbies: BasicCard[] = [
-  {
-    title: "Guitar",
-    image: "/guitar.png",
-  },
-  {
-    title: "Rest",
-    image: "/crochet.png",
-  },
-];
-
-const defaultGrooming: BasicCard[] = [
-  {
-    title: "Skincare",
-    image: "/groom1.jpg",
-  },
-  {
-    title: "Hair",
-    image: "/groom2.jpg",
-  },
-  {
-    title: "Nails",
-    image: "/groom3.jpg",
-  },
-  {
-    title: "Smile",
-    image: "/groom4.jpg",
-  },
-  {
-    title: "Makeup",
-    image: "/groom5.jpg",
-  },
-];
-
-const defaultFitness: BasicCard[] = [
-  {
-    title: "Yoga",
-    image: "/fitness1.jpg",
-  },
-  {
-    title: "Stretch",
-    image: "/fitness2.jpg",
-  },
-  {
-    title: "Pilates",
-    image: "/fitness3.jpg",
-  },
-  {
-    title: "Cardio",
-    image: "/fitness4.jpg",
-  },
-];
-
-const defaultExplore: BasicCard[] = [
-  {
-    title: "Starbucks",
-    image: "/starbucks.jpg",
-  },
-  {
-    title: "Juhu + Flower Shop",
-    image: "/flower-explore.jpg",
-  },
-];
+const defaultPages: PageCard[] = [];
+const defaultFontCards: FontCard[] = [];
+const defaultBooks: BasicCard[] = [];
+const defaultHobbies: BasicCard[] = [];
+const defaultGrooming: BasicCard[] = [];
+const defaultFitness: BasicCard[] = [];
+const defaultExplore: BasicCard[] = [];
 
 const getFontClass = (fontName: string) => {
   switch (fontName.toLowerCase()) {
@@ -298,13 +195,13 @@ export default function Home() {
           image: entry.image ?? "",
         }));
 
-        setPages(pagesFromApi.length > 0 ? pagesFromApi : defaultPages);
-        setFontCards(fontsFromApi.length > 0 ? fontsFromApi : defaultFontCards);
-        setBooks(booksFromApi.length > 0 ? booksFromApi : defaultBooks);
-        setHobbies(hobbiesFromApi.length > 0 ? hobbiesFromApi : defaultHobbies);
-        setGrooming(groomingFromApi.length > 0 ? groomingFromApi : defaultGrooming);
-        setFitness(fitnessFromApi.length > 0 ? fitnessFromApi : defaultFitness);
-        setExplore(exploreFromApi.length > 0 ? exploreFromApi : defaultExplore);
+        setPages(pagesFromApi);
+        setFontCards(fontsFromApi);
+        setBooks(booksFromApi);
+        setHobbies(hobbiesFromApi);
+        setGrooming(groomingFromApi);
+        setFitness(fitnessFromApi);
+        setExplore(exploreFromApi);
       } catch {
       }
     };
