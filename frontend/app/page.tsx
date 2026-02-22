@@ -471,8 +471,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
-              <div className="flex snap-x snap-mandatory gap-4 pr-2 my-5">
+            <div className="-ml-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
+              <div className="flex snap-x pr-3 snap-mandatory gap-4 pr-2 my-5">
                 {pages.map((page, index) => (
                   <Link
                     key={page.id ?? `${page.handle}-${index}`}
@@ -539,8 +539,8 @@ export default function Home() {
             <h2 className="happy-monkey-regular text-4xl leading-tight tracking-tight">
               Books worth investing Time
             </h2>
-            <div className="-ml-4 pr-3 border overflow-x-auto px-4 no-scrollbar scroll-smooth">
-              <div className="flex gap-6 pr-4 my-10">
+            <div className="-ml-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
+              <div className="flex gap-6 pr-4 my-10 pr-3">
                 {books.map((book) => (
                   <Link
                     key={book.id ?? book.title}
