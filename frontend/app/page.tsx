@@ -608,7 +608,7 @@ export default function Home() {
             <h2 className="happy-monkey-regular text-4xl leading-tight tracking-tight">
               Books worth investing Time
             </h2>
-            <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
+            <div className="-ml-4 pr-3 border overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex gap-6 pr-4 my-10">
                 {books.map((book) => (
                   <Link
@@ -631,7 +631,7 @@ export default function Home() {
             <h2 className="happy-monkey-regular text-4xl">
               Hobbies
             </h2>
-            <div className="-mx-4 overflow-x-auto px-5 no-scrollbar scroll-smooth">
+            <div className="-ml-4 pr-3 overflow-x-auto px-5 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-7 pr-2">
                 {hobbies.map((hobby) => (
                   <Link
@@ -654,7 +654,7 @@ export default function Home() {
             <h2 className="happy-monkey-regular text-4xl leading-tight mt-2">
               Grooming
             </h2>
-            <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
+            <div className="-ml-4 pr-3 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-4">
                 {grooming.map((item) => (
                   <Link
@@ -677,7 +677,7 @@ export default function Home() {
             <h2 className="happy-monkey-regular text-4xl leading-tight mt-2">
               Fitness
             </h2>
-            <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
+            <div className="-ml-4 pr-2 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-4">
                 {fitness.map((item) => (
                   <Link
@@ -700,7 +700,7 @@ export default function Home() {
             <h2 className="happy-monkey-regular text-4xl leading-tight mt-4">
               Go out and explore..
             </h2>
-            <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
+            <div className="-ml-4 pr-3 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-6 pr-4 my-4">
                 {explore.map((spot) => (
                   <Link
