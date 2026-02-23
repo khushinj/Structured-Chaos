@@ -21,6 +21,7 @@ const parseOrigins = (value) =>
 
 const defaultCorsOrigins = [
 	"https://potential-bassoon-px9vrwrwxr5hrqwq-3000.app.github.dev/",
+	"http://localhost:3000",
 	"http://127.0.0.1:3000",
 	"https://structured-chaos.vercel.app",
 ].map(normalizeOrigin);

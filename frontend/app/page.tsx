@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
+import PlusIcon from "../public/plusIcon.png";
+import HomeIcon from "../public/home.png";
 
 type SectionKey = "pages" | "fonts" | "books" | "hobbies" | "grooming" | "fitness" | "explore";
 
@@ -50,31 +53,18 @@ const emptyForm: FormState = {
 };
 
 
-const HomeIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    className="h-5 w-5 "
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.6"
-  >
-    <path d="M4 11.5L12 5l8 6.5" />
-    <path d="M6.5 10.5V19h11V10.5" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    className="h-6 w-6"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <path d="M12 5v14" />
-    <path d="M5 12h14" />
-  </svg>
-);
+// const PlusIcon = () => (
+//   <svg
+//     viewBox="0 0 24 24"
+//     className="h-6 w-6"
+//     fill="none"
+//     stroke="currentColor"
+//     strokeWidth="2"
+//   >
+//     <path d="M12 5v14" />
+//     <path d="M5 12h14" />
+//   </svg>
+// );
 
 const MenuArrowIcon = () => (
   <svg
@@ -435,15 +425,15 @@ export default function Home() {
               className="rounded-full bg-[#FBFBFB] p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] flex-shrink-0"
               aria-label="Home"
             >
-              <HomeIcon />
+              <Image src={HomeIcon} alt="Home" width={30} height={30} />
             </button>
             <button
               type="button"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-900 text-white shadow-[0_6px_16px_rgba(0,0,0,0.18)] flex-shrink-0"
+              className="flex h-12 w-12 items-center justify-center text-white flex-shrink-0"
               aria-label="Add"
               onClick={openMenu}
             >
-              <PlusIcon />
+              <Image src={PlusIcon} alt="Add" width={50} height={50} />
             </button>
           </motion.header>
 
