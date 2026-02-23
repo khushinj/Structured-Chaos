@@ -11,9 +11,30 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+const normalizeOrigin = (value) => value.trim().replace(/\/+$/, "");
+const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000")
+	.split(",")
+	.map((value) => value.trim())
+	.filter(Boolean)
+	.map(normalizeOrigin);
 
-app.use(cors({ origin: corsOrigin }));
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			if (!origin) {
+				return callback(null, true);
+			}
+
+			const normalizedRequestOrigin = normalizeOrigin(origin);
+			if (corsOrigins.includes(normalizedRequestOrigin)) {
+				return callback(null, true);
+			}
+
+			return callback(new Error("Not allowed by CORS"));
+		},
+	})
+);
+
 app.use(express.json({ limit: "2mb" }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -24,6 +45,10 @@ app.get("/health", (_req, res) => {
 app.use("/api/entries", entriesRouter);
 
 app.use((err, _req, res, _next) => {
+	if (err && err.message === "Not allowed by CORS") {
+		return res.status(403).json({ error: err.message });
+	}
+
 	if (err && err.message === "Only image files are allowed") {
 		return res.status(400).json({ error: err.message });
 	}
