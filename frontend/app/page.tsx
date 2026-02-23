@@ -40,23 +40,7 @@ type ApiEntry = {
   name?: string;
 };
 
-const configuredApiBase = process.env.NEXT_PUBLIC_API_URL?.trim() || "";
-const normalizedApiBase = configuredApiBase.replace(/\/+$/, "");
-const ENTRIES_BASE = (() => {
-  if (!normalizedApiBase) {
-    return "/api/proxy/entries";
-  }
-
-  if (normalizedApiBase.endsWith("/api/entries")) {
-    return normalizedApiBase;
-  }
-
-  if (normalizedApiBase.endsWith("/api/proxy")) {
-    return `${normalizedApiBase}/entries`;
-  }
-
-  return `${normalizedApiBase}/api/entries`;
-})();
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
 const emptyForm: FormState = {
   title: "",
@@ -178,13 +162,13 @@ export default function Home() {
           fitnessResponse,
           exploreResponse,
         ] = await Promise.all([
-          fetch(`${ENTRIES_BASE}/pages`, { cache: "no-store" }),
-          fetch(`${ENTRIES_BASE}/fonts`, { cache: "no-store" }),
-          fetch(`${ENTRIES_BASE}/books`, { cache: "no-store" }),
-          fetch(`${ENTRIES_BASE}/hobbies`, { cache: "no-store" }),
-          fetch(`${ENTRIES_BASE}/grooming`, { cache: "no-store" }),
-          fetch(`${ENTRIES_BASE}/fitness`, { cache: "no-store" }),
-          fetch(`${ENTRIES_BASE}/explore`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/pages`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/fonts`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/books`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/hobbies`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/grooming`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/fitness`, { cache: "no-store" }),
+          fetch(`${API_BASE}/api/entries/explore`, { cache: "no-store" }),
         ]);
 
         if (
@@ -365,7 +349,7 @@ export default function Home() {
     setFormError("");
 
     try {
-      const response = await fetch(`${ENTRIES_BASE}/${activeFormSection}`, {
+      const response = await fetch(`${API_BASE}/api/entries/${activeFormSection}`, {
         method: "POST",
         body: payload,
       });
