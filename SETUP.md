@@ -13,7 +13,7 @@ Set these values in `backend/.env`:
 
 - `MONGODB_URI` (required)
 - `PORT` (optional, defaults to `5000`)
-- `CORS_ORIGIN` (optional, defaults to `http://localhost:3000`)
+- `CORS_ORIGIN` (optional, supports multiple values separated by commas, e.g. `https://structured-chaos.vercel.app,http://localhost:3000`)
 - `CLOUDINARY_CLOUD_NAME` (required)
 - `CLOUDINARY_API_KEY` (required)
 - `CLOUDINARY_API_SECRET` (required)

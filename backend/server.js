@@ -12,11 +12,25 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 const normalizeOrigin = (value) => value.trim().replace(/\/+$/, "");
-const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000")
-	.split(",")
-	.map((value) => value.trim())
-	.filter(Boolean)
-	.map(normalizeOrigin);
+const parseOrigins = (value) =>
+	(value || "")
+		.split(/[\s,]+/)
+		.map((origin) => origin.trim())
+		.filter(Boolean)
+		.map(normalizeOrigin);
+
+const defaultCorsOrigins = [
+	"http://localhost:3000",
+	"http://127.0.0.1:3000",
+	"https://structured-chaos.vercel.app",
+].map(normalizeOrigin);
+
+const corsOrigins = Array.from(
+	new Set([...defaultCorsOrigins, ...parseOrigins(process.env.CORS_ORIGIN)])
+);
+
+const isGithubPreviewOrigin = (origin) =>
+	/^https:\/\/[a-z0-9-]+\.app\.github\.dev$/i.test(origin);
 
 app.use(
 	cors({
@@ -26,7 +40,10 @@ app.use(
 			}
 
 			const normalizedRequestOrigin = normalizeOrigin(origin);
-			if (corsOrigins.includes(normalizedRequestOrigin)) {
+			if (
+				corsOrigins.includes(normalizedRequestOrigin) ||
+				isGithubPreviewOrigin(normalizedRequestOrigin)
+			) {
 				return callback(null, true);
 			}
 
