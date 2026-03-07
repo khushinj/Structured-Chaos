@@ -450,32 +450,34 @@ export default function Home() {
             </motion.p>
           )}
 
-          <motion.section
-            className="rounded-[49px] min-h-[320px] bg-[#FFFDFD] pb-3 px-2 mt-7 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] overflow-hidden"
-            variants={fadeItem}
-          >
-            <div className="relative w-full">
-              <img
-                src="/ProfileCardImg.jpg"
-                alt="Cover"
-                className="h-40 w-full rounded-[39px] mt-2 object-cover"
-              />
-              <img
-                src="/ProfileCardImg.jpg"
-                alt="Khushi Joshi"
-                className="absolute -bottom-6 left-4 h-12 w-12 rounded-full border-2 border-white object-cover"
-              />
-            </div>
-            <div className="mt-8 px-2 overflow-hidden">
-              <h1 className="text-lg sm:text-xl oxygen-bold truncate">
-                Khushi Joshi
-              </h1>
-              <p className="text-sm inter-regular text-[#787878]">Digital Architect</p>
-              <p className="mt-3 text-sm karla-regular line-clamp-2">
-                Designing my own operating system for growth.
-              </p>
-            </div>
-          </motion.section>
+          <motion.div variants={fadeItem}>
+            <Link
+              href="/profile-board"
+              className="block rounded-[49px] min-h-[320px] bg-[#FFFDFD] pb-3 px-2 mt-7 shadow-3d-card overflow-hidden transition-transform duration-200 hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <div className="relative w-full">
+                <img
+                  src="/ProfileCardImg.jpg"
+                  alt="Cover"
+                  className="h-40 w-full rounded-[39px] mt-2 object-cover"
+                />
+                <img
+                  src="/ProfileCardImg.jpg"
+                  alt="Khushi Joshi"
+                  className="absolute -bottom-6 left-4 h-12 w-12 rounded-full border-2 border-white object-cover"
+                />
+              </div>
+              <div className="mt-8 px-2 overflow-hidden">
+                <h1 className="text-lg sm:text-xl oxygen-bold truncate">
+                  Khushi Joshi
+                </h1>
+                <p className="text-sm inter-regular text-[#787878]">Digital Architect</p>
+                <p className="mt-3 text-sm karla-regular line-clamp-2">
+                  Designing my own operating system for growth.
+                </p>
+              </div>
+            </Link>
+          </motion.div>
 
           <motion.section id="pages-section" className="flex flex-col gap-3 my-8 sm:my-10" variants={fadeItem}>
             <div className="flex items-center justify-between gap-2">
@@ -511,10 +513,10 @@ export default function Home() {
                   <Link
                     key={page.id ?? `${page.handle}-${index}`}
                     href="#"
-                    className="min-w-[calc(100vw-120px)] sm:min-w-[200px] snap-start rounded-[32px] bg-white px-3 py-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] flex-shrink-0 flex items-center gap-6"
+                    className="min-w-[calc(100vw-120px)] sm:min-w-[200px] snap-start rounded-[32px] bg-white px-3 py-6 shadow-3d-card transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] flex-shrink-0 flex items-center gap-6"
                   >
                     <div className={`relative flex-shrink-0 overflow-hidden rounded-[24px] ${index === 0 || index === 2 ? 'h-42 w-36' : 'h-40 w-32'}`}>
-                      <img src={page.image} alt={page.handle} className="h-full w-full object-cover" />
+                      <img src={page.image} alt={page.handle} className="h-full w-full object-cover shadow-3d-inner" />
                     </div>
                     <div className="flex flex-1 items-center gap-4 min-w-0">
                       <img src="/arrow.png" alt="Arrow" className="h-16 w-16 flex-shrink-0" />
@@ -560,7 +562,7 @@ export default function Home() {
                   <Link
                     key={`${font.name}-${index}`}
                     href="#"
-                    className="min-w-[370px] h-50 aspect-square rounded-[24px] bg-white px-5 py-8 text-center font-semibold shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center snap-start flex-shrink-0"
+                    className="min-w-[370px] h-50 aspect-square rounded-[24px] bg-white px-5 py-8 text-center font-semibold shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center snap-start flex-shrink-0"
                   >
                     <span className={`text-3xl ${getFontClass(font.name)}`}>{font.name || ""}</span>
                   </Link>
@@ -584,7 +586,7 @@ export default function Home() {
                     <img
                       src={book.image}
                       alt={book.title}
-                      className="h-[210px] w-[170px] rounded-[30px] object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)]"
+                      className="h-[210px] w-[170px] rounded-[30px] object-cover shadow-3d-card"
                     />
                   </Link>
                 ))}
@@ -602,12 +604,12 @@ export default function Home() {
                   <Link
                     key={hobby.id ?? hobby.title}
                     href="#"
-                    className="w-[400px] my-10 snap-start rounded-[30px] bg-white p-1.5 sm:p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)]  transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    className="w-[400px] my-10 snap-start rounded-[30px] bg-white p-1.5 sm:p-2 shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
                     <img
                       src={hobby.image}
                       alt={hobby.title}
-                      className="h-60 w-full rounded-[27px] object-cover"
+                      className="h-60 w-full rounded-[27px] object-cover shadow-3d-inner"
                     />
                   </Link>
                 ))}
@@ -625,12 +627,12 @@ export default function Home() {
                   <Link
                     key={item.id ?? item.title}
                     href="#"
-                    className="min-w-[98px] sm:min-w-[110px] snap-start rounded-[20px] bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    className="min-w-[98px] sm:min-w-[110px] snap-start rounded-[20px] bg-white shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="h-[130px] sm:h-[140px] w-full rounded-[18px] object-cover"
+                      className="h-[130px] sm:h-[140px] w-full rounded-[16px] object-cover shadow-3d-inner"
                     />
                   </Link>
                 ))}
@@ -648,12 +650,12 @@ export default function Home() {
                   <Link
                     key={item.id ?? item.title}
                     href="#"
-                    className="w-[120px] snap-start rounded-[20px] bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    className="w-[120px] snap-start rounded-[20px] bg-white shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="h-[160px] w-full rounded-[18px] object-cover"
+                      className="h-[160px] w-full rounded-[18px] object-cover shadow-3d-inner"
                     />
                   </Link>
                 ))}
@@ -671,12 +673,12 @@ export default function Home() {
                   <Link
                     key={spot.id ?? spot.title}
                     href="#"
-                    className="min-w-[300px] sm:min-w-[360px] snap-start rounded-[38px] bg-white p-2.5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    className="min-w-[300px] sm:min-w-[360px] snap-start rounded-[38px] bg-white p-2.5 shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                   >
                     <img
                       src={spot.image}
                       alt={spot.title}
-                      className="h-[210px] w-full rounded-[32px] object-cover"
+                      className="h-[210px] w-full rounded-[32px] object-cover shadow-3d-inner"
                     />
                     <div className="mt-3 px-3 pb-3 text-2xl  mooli-regular line-clamp-1">
                       {spot.title}
@@ -781,22 +783,22 @@ export default function Home() {
                     <p className="mb-2 text-xs uppercase tracking-wide text-zinc-500">Preview</p>
 
                     {activeFormSection === "pages" && (
-                      <div className="rounded-2xl bg-white p-3 shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
-                        <img src={imagePreview || "/craftxImg.png"} alt="Preview" className="h-28 w-full rounded-xl object-cover" />
+                      <div className="rounded-2xl bg-white p-3 shadow-3d-card">
+                        <img src={imagePreview || "/craftxImg.png"} alt="Preview" className="h-28 w-full rounded-xl object-cover shadow-3d-inner" />
                         <p className="mt-2 text-sm capriola-regular">@{formData.handle || "yourhandle"}</p>
                         <p className="mt-1 whitespace-pre-line text-xs text-zinc-600">{formData.description || "Your description preview"}</p>
                       </div>
                     )}
 
                     {activeFormSection === "fonts" && (
-                      <div className="flex h-24 items-center justify-center rounded-2xl bg-white text-2xl shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
+                      <div className="flex h-24 items-center justify-center rounded-2xl bg-white text-2xl shadow-3d-card">
                         <span className={getFontClass(formData.name || "")}>{formData.name || "Font Preview"}</span>
                       </div>
                     )}
 
                     {["books", "hobbies", "grooming", "fitness", "explore"].includes(activeFormSection) && (
-                      <div className="rounded-2xl bg-white p-2 shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
-                        <img src={imagePreview || "/ProfileCardImg.jpg"} alt="Preview" className="h-36 w-full rounded-xl object-cover" />
+                      <div className="rounded-2xl bg-white p-2 shadow-3d-card">
+                        <img src={imagePreview || "/ProfileCardImg.jpg"} alt="Preview" className="h-36 w-full rounded-xl object-cover shadow-3d-inner" />
                         <p className="mt-2 text-sm mooli-regular text-zinc-800">{formData.title || "Card title"}</p>
                       </div>
                     )}

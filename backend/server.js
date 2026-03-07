@@ -21,8 +21,6 @@ const parseOrigins = (value) =>
 
 const defaultCorsOrigins = [
 	"https://potential-bassoon-px9vrwrwxr5hrqwq-3000.app.github.dev/",
-	"http://localhost:3000",
-	"http://127.0.0.1:3000",
 	"https://structured-chaos.vercel.app",
 ].map(normalizeOrigin);
 
@@ -32,6 +30,9 @@ const corsOrigins = Array.from(
 
 const isGithubPreviewOrigin = (origin) =>
 	/^https:\/\/[a-z0-9-]+\.app\.github\.dev$/i.test(origin);
+
+const isLocalDevOrigin = (origin) =>
+	/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
 
 app.use(
 	cors({
@@ -43,7 +44,8 @@ app.use(
 			const normalizedRequestOrigin = normalizeOrigin(origin);
 			if (
 				corsOrigins.includes(normalizedRequestOrigin) ||
-				isGithubPreviewOrigin(normalizedRequestOrigin)
+				isGithubPreviewOrigin(normalizedRequestOrigin) ||
+				isLocalDevOrigin(normalizedRequestOrigin)
 			) {
 				return callback(null, true);
 			}
