@@ -83,8 +83,8 @@ function BoardCard({ item }: { item: BoardItem }) {
 
 export default function ProfileBoardPage() {
   return (
-    <main className="min-h-70 bg-[#cfcfcf] px-4 py-6">
-      <section className="mx-auto w-full max-w-[430px] rounded-[38px] bg-[#f3f3f3] px-5 pb-8 pt-5">
+    <main className="h-dvh overflow-hidden bg-[#cfcfcf] px-4 py-4 sm:py-6">
+      <section className="profile-board-scroll mx-auto flex h-full w-full max-w-[430px] flex-col overflow-y-auto rounded-[38px] bg-[#f3f3f3] px-5 pb-8 pt-5">
         <header className="mb-5 flex items-center justify-between">
           <Link href="/" aria-label="Go home" className="rounded-full p-1">
             <Image src={HomeIcon} alt="Home" width={30} height={30} />
