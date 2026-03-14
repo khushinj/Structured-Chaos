@@ -6,25 +6,37 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import PlusIcon from "../public/plusIcon.png";
 import HomeIcon from "../public/home.png";
-
-type SectionKey = "pages" | "fonts" | "books" | "hobbies" | "grooming" | "fitness" | "explore";
+import CardInsightModal from "./components/CardInsightModal";
+import InsightFormModal from "./components/InsightFormModal";
+import {
+  getDefaultInsight,
+  normalizeInsight,
+  sectionLabel,
+  validateInsightBySection,
+  type InsightCard,
+  type InsightData,
+  type SectionKey,
+} from "./components/insightUtils";
 
 type PageCard = {
   id?: string;
   handle: string;
   description: string;
   image: string;
+  insight?: InsightData;
 };
 
 type FontCard = {
   id?: string;
   name: string;
+  insight?: InsightData;
 };
 
 type BasicCard = {
   id?: string;
   title: string;
   image: string;
+  insight?: InsightData;
 };
 
 type FormState = {
@@ -41,6 +53,7 @@ type ApiEntry = {
   description?: string;
   handle?: string;
   name?: string;
+  insight?: InsightData;
 };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://structuredchaos.onrender.com";
@@ -131,7 +144,14 @@ export default function Home() {
   const [imagePreview, setImagePreview] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [formError, setFormError] = useState("");
+  const [insightFormError, setInsightFormError] = useState("");
   const [loadError, setLoadError] = useState("");
+  const [isInsightInputOpen, setIsInsightInputOpen] = useState(false);
+  const [insightSection, setInsightSection] = useState<SectionKey | null>(null);
+  const [insightDraft, setInsightDraft] = useState<InsightData>({});
+  const [editingInsightCard, setEditingInsightCard] = useState<InsightCard | null>(null);
+  const [isEditingExistingCard, setIsEditingExistingCard] = useState(false);
+  const [selectedInsight, setSelectedInsight] = useState<{ section: SectionKey; card: InsightCard } | null>(null);
   const [pages, setPages] = useState<PageCard[]>(defaultPages);
   const [fontCards, setFontCards] = useState<FontCard[]>(defaultFontCards);
   const [books, setBooks] = useState<BasicCard[]>(defaultBooks);
@@ -190,35 +210,42 @@ export default function Home() {
             handle: entry.handle ?? "",
             description: entry.description ?? "",
             image: entry.image ?? "",
+            insight: normalizeInsight("pages", entry.insight),
           }));
           const fontsFromApi = (fontsData ?? []).map((entry) => ({
             id: entry.id,
             name: entry.name ?? "",
+            insight: normalizeInsight("fonts", entry.insight),
           }));
           const booksFromApi = (booksData ?? []).map((entry) => ({
             id: entry.id,
             title: entry.title ?? "",
             image: entry.image ?? "",
+            insight: normalizeInsight("books", entry.insight),
           }));
           const hobbiesFromApi = (hobbiesData ?? []).map((entry) => ({
             id: entry.id,
             title: entry.title ?? "",
             image: entry.image ?? "",
+            insight: normalizeInsight("hobbies", entry.insight),
           }));
           const groomingFromApi = (groomingData ?? []).map((entry) => ({
             id: entry.id,
             title: entry.title ?? "",
             image: entry.image ?? "",
+            insight: normalizeInsight("grooming", entry.insight),
           }));
           const fitnessFromApi = (fitnessData ?? []).map((entry) => ({
             id: entry.id,
             title: entry.title ?? "",
             image: entry.image ?? "",
+            insight: normalizeInsight("fitness", entry.insight),
           }));
           const exploreFromApi = (exploreData ?? []).map((entry) => ({
             id: entry.id,
             title: entry.title ?? "",
             image: entry.image ?? "",
+            insight: normalizeInsight("explore", entry.insight),
           }));
 
         setPages(pagesFromApi);
@@ -260,6 +287,10 @@ export default function Home() {
     setFormData(emptyForm);
     resetImageSelection();
     setFormError("");
+    setInsightFormError("");
+    setInsightSection(null);
+    setInsightDraft({});
+    setIsInsightInputOpen(false);
   };
 
   const handleMenuSelect = (sectionKey: SectionKey) => {
@@ -267,6 +298,9 @@ export default function Home() {
     setFormData(emptyForm);
     resetImageSelection();
     setFormError("");
+    setInsightSection(sectionKey);
+    setInsightDraft(getDefaultInsight(sectionKey));
+    setInsightFormError("");
   };
 
   const handleImageSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -294,8 +328,122 @@ export default function Home() {
     return section?.sectionId;
   };
 
+  const openInsightModal = (section: SectionKey, card: InsightCard) => {
+    setSelectedInsight({ section, card });
+  };
+
+  const openInsightInputModal = (section: SectionKey, card: InsightCard, editingExisting = false) => {
+    setInsightSection(section);
+    setInsightDraft(normalizeInsight(section, card.insight));
+    setEditingInsightCard(card);
+    setIsEditingExistingCard(editingExisting);
+    setInsightFormError("");
+    setIsInsightInputOpen(true);
+  };
+
+  const closeInsightInputModal = () => {
+    setIsInsightInputOpen(false);
+    setInsightFormError("");
+  };
+
+  const updateCardInsightInState = (section: SectionKey, cardId: string, insight: InsightData) => {
+    if (section === "pages") {
+      setPages((prev) => prev.map((item) => (item.id === cardId ? { ...item, insight } : item)));
+    }
+    if (section === "fonts") {
+      setFontCards((prev) => prev.map((item) => (item.id === cardId ? { ...item, insight } : item)));
+    }
+    if (section === "books") {
+      setBooks((prev) => prev.map((item) => (item.id === cardId ? { ...item, insight } : item)));
+    }
+    if (section === "hobbies") {
+      setHobbies((prev) => prev.map((item) => (item.id === cardId ? { ...item, insight } : item)));
+    }
+    if (section === "grooming") {
+      setGrooming((prev) => prev.map((item) => (item.id === cardId ? { ...item, insight } : item)));
+    }
+    if (section === "fitness") {
+      setFitness((prev) => prev.map((item) => (item.id === cardId ? { ...item, insight } : item)));
+    }
+    if (section === "explore") {
+      setExplore((prev) => prev.map((item) => (item.id === cardId ? { ...item, insight } : item)));
+    }
+  };
+
+  const saveInsightInput = async () => {
+    if (!insightSection) {
+      return;
+    }
+
+    const validationError = validateInsightBySection(insightSection, insightDraft);
+    if (validationError) {
+      setInsightFormError(validationError);
+      return;
+    }
+
+    if (!isEditingExistingCard) {
+      setIsInsightInputOpen(false);
+      setInsightFormError("");
+      return;
+    }
+
+    if (!editingInsightCard?.id) {
+      setInsightFormError("Cannot edit this card because it has no ID.");
+      return;
+    }
+
+    setIsSaving(true);
+    setInsightFormError("");
+
+    try {
+      const payload = new FormData();
+      payload.append("insight", JSON.stringify(insightDraft));
+
+      const response = await fetch(`${API_BASE}/api/entries/${insightSection}/${editingInsightCard.id}`, {
+        method: "PUT",
+        body: payload,
+      });
+
+      const updatedEntry: ApiEntry & { error?: string } = await response.json().catch(() => ({ error: "Failed to save insight." }));
+      if (!response.ok) {
+        setInsightFormError(updatedEntry.error || "Failed to save insight.");
+        setIsSaving(false);
+        return;
+      }
+
+      const nextInsight = normalizeInsight(insightSection, updatedEntry.insight ?? insightDraft);
+      updateCardInsightInState(insightSection, editingInsightCard.id, nextInsight);
+      setSelectedInsight((prev) => {
+        if (!prev || prev.section !== insightSection || prev.card.id !== editingInsightCard.id) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          card: {
+            ...prev.card,
+            insight: nextInsight,
+          },
+        };
+      });
+
+      setIsInsightInputOpen(false);
+      setInsightFormError("");
+    } catch {
+      setInsightFormError("Failed to connect to backend.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const submitEntry = async () => {
     if (!activeFormSection) {
+      return;
+    }
+
+    const validationError = validateInsightBySection(activeFormSection, insightDraft);
+    if (validationError) {
+      setFormError(`Add insight details first. ${validationError}`);
       return;
     }
 
@@ -335,6 +483,8 @@ export default function Home() {
       payload.append("image", selectedImage);
     }
 
+    payload.append("insight", JSON.stringify(insightDraft));
+
     setIsSaving(true);
     setFormError("");
 
@@ -359,6 +509,7 @@ export default function Home() {
             handle: createdEntry.handle ?? "",
             description: createdEntry.description ?? "",
             image: createdEntry.image ?? "",
+            insight: normalizeInsight("pages", createdEntry.insight),
           },
         ]);
       }
@@ -369,24 +520,25 @@ export default function Home() {
           {
             id: createdEntry.id,
             name: createdEntry.name ?? "",
+            insight: normalizeInsight("fonts", createdEntry.insight),
           },
         ]);
       }
 
       if (activeFormSection === "books") {
-        setBooks((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+        setBooks((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "", insight: normalizeInsight("books", createdEntry.insight) }]);
       }
       if (activeFormSection === "hobbies") {
-        setHobbies((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+        setHobbies((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "", insight: normalizeInsight("hobbies", createdEntry.insight) }]);
       }
       if (activeFormSection === "grooming") {
-        setGrooming((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+        setGrooming((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "", insight: normalizeInsight("grooming", createdEntry.insight) }]);
       }
       if (activeFormSection === "fitness") {
-        setFitness((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+        setFitness((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "", insight: normalizeInsight("fitness", createdEntry.insight) }]);
       }
       if (activeFormSection === "explore") {
-        setExplore((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "" }]);
+        setExplore((prev) => [...prev, { id: createdEntry.id, title: createdEntry.title ?? "", image: createdEntry.image ?? "", insight: normalizeInsight("explore", createdEntry.insight) }]);
       }
 
       const sectionId = getSectionId(activeFormSection);
@@ -394,6 +546,9 @@ export default function Home() {
       setActiveFormSection(null);
       setFormData(emptyForm);
       resetImageSelection();
+      setInsightSection(null);
+      setInsightDraft({});
+      setIsInsightInputOpen(false);
       if (sectionId) {
         setTimeout(() => {
           document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -510,10 +665,11 @@ export default function Home() {
             <div className="-ml-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x pr-3 snap-mandatory gap-4 pr-2 my-5">
                 {pages.map((page, index) => (
-                  <Link
+                  <button
+                    type="button"
                     key={page.id ?? `${page.handle}-${index}`}
-                    href="#"
                     className="min-w-[calc(100vw-120px)] sm:min-w-[200px] snap-start rounded-[32px] bg-white px-3 py-6 shadow-3d-card transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] flex-shrink-0 flex items-center gap-6"
+                    onClick={() => openInsightModal("pages", page)}
                   >
                     <div className={`relative flex-shrink-0 overflow-hidden rounded-[24px] ${index === 0 || index === 2 ? 'h-42 w-36' : 'h-40 w-32'}`}>
                       <img src={page.image} alt={page.handle} className="h-full w-full object-cover shadow-3d-inner" />
@@ -546,7 +702,7 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -559,13 +715,14 @@ export default function Home() {
             <div className="-mx-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-3 pr-2 my-10">
                 {fontCards.map((font, index) => (
-                  <Link
+                  <button
+                    type="button"
                     key={`${font.name}-${index}`}
-                    href="#"
                     className="min-w-[370px] h-50 aspect-square rounded-[24px] bg-white px-5 py-8 text-center font-semibold shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center snap-start flex-shrink-0"
+                    onClick={() => openInsightModal("fonts", font)}
                   >
                     <span className={`text-3xl ${getFontClass(font.name)}`}>{font.name || ""}</span>
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -578,17 +735,18 @@ export default function Home() {
             <div className="-ml-4 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex gap-6 pr-4 my-10 pr-3">
                 {books.map((book) => (
-                  <Link
+                  <button
+                    type="button"
                     key={book.id ?? book.title}
-                    href="#"
                     className="snap-start transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] flex-shrink-0"
+                    onClick={() => openInsightModal("books", book)}
                   >
                     <img
                       src={book.image}
                       alt={book.title}
                       className="h-[210px] w-[170px] rounded-[30px] object-cover shadow-3d-card"
                     />
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -601,17 +759,18 @@ export default function Home() {
             <div className="-ml-4 pr-3 overflow-x-auto px-5 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-7 pr-2">
                 {hobbies.map((hobby) => (
-                  <Link
+                  <button
+                    type="button"
                     key={hobby.id ?? hobby.title}
-                    href="#"
                     className="w-[400px] my-10 snap-start rounded-[30px] bg-white p-1.5 sm:p-2 shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    onClick={() => openInsightModal("hobbies", hobby)}
                   >
                     <img
                       src={hobby.image}
                       alt={hobby.title}
                       className="h-60 w-full rounded-[27px] object-cover shadow-3d-inner"
                     />
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -624,17 +783,18 @@ export default function Home() {
             <div className="-ml-4 pr-3 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-4">
                 {grooming.map((item) => (
-                  <Link
+                  <button
+                    type="button"
                     key={item.id ?? item.title}
-                    href="#"
                     className="min-w-[98px] sm:min-w-[110px] snap-start rounded-[20px] bg-white shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    onClick={() => openInsightModal("grooming", item)}
                   >
                     <img
                       src={item.image}
                       alt={item.title}
                       className="h-[130px] sm:h-[140px] w-full rounded-[16px] object-cover shadow-3d-inner"
                     />
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -647,17 +807,18 @@ export default function Home() {
             <div className="-ml-4 pr-2 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-4 pr-2 my-4">
                 {fitness.map((item) => (
-                  <Link
+                  <button
+                    type="button"
                     key={item.id ?? item.title}
-                    href="#"
                     className="w-[120px] snap-start rounded-[20px] bg-white shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    onClick={() => openInsightModal("fitness", item)}
                   >
                     <img
                       src={item.image}
                       alt={item.title}
                       className="h-[160px] w-full rounded-[18px] object-cover shadow-3d-inner"
                     />
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -670,10 +831,11 @@ export default function Home() {
             <div className="-ml-4 pr-3 overflow-x-auto px-4 no-scrollbar scroll-smooth">
               <div className="flex snap-x snap-mandatory gap-6 pr-4 my-4">
                 {explore.map((spot) => (
-                  <Link
+                  <button
+                    type="button"
                     key={spot.id ?? spot.title}
-                    href="#"
                     className="min-w-[300px] sm:min-w-[360px] snap-start rounded-[38px] bg-white p-2.5 shadow-3d-card transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                    onClick={() => openInsightModal("explore", spot)}
                   >
                     <img
                       src={spot.image}
@@ -683,7 +845,7 @@ export default function Home() {
                     <div className="mt-3 px-3 pb-3 text-2xl  mooli-regular line-clamp-1">
                       {spot.title}
                     </div>
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -779,6 +941,19 @@ export default function Home() {
                     </>
                   )}
 
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!activeFormSection) {
+                        return;
+                      }
+                      openInsightInputModal(activeFormSection, { insight: insightDraft }, false);
+                    }}
+                    className="w-full rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm text-zinc-800"
+                  >
+                    {insightSection ? `Add ${sectionLabel[insightSection]} Insight Details` : "Add Insight Details"}
+                  </button>
+
                   <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-3">
                     <p className="mb-2 text-xs uppercase tracking-wide text-zinc-500">Preview</p>
 
@@ -819,6 +994,29 @@ export default function Home() {
             </div>
           </div>
         )}
+
+        <CardInsightModal
+          isOpen={Boolean(selectedInsight)}
+          section={selectedInsight?.section ?? null}
+          data={selectedInsight?.card ?? null}
+          onClose={() => setSelectedInsight(null)}
+          onEdit={() => {
+            if (!selectedInsight) {
+              return;
+            }
+            openInsightInputModal(selectedInsight.section, selectedInsight.card, true);
+          }}
+        />
+
+        <InsightFormModal
+          isOpen={isInsightInputOpen}
+          section={insightSection}
+          draft={insightDraft}
+          error={insightFormError}
+          onChange={setInsightDraft}
+          onClose={closeInsightInputModal}
+          onSave={saveInsightInput}
+        />
       </motion.div>
     </div>
   );

@@ -37,6 +37,10 @@ const cardSchema = new mongoose.Schema(
 			default: "",
 			trim: true,
 		},
+		insight: {
+			type: mongoose.Schema.Types.Mixed,
+			default: {},
+		},
 	},
 	{
 		timestamps: { createdAt: true, updatedAt: false },

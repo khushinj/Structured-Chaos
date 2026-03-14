@@ -33,6 +33,7 @@ const toGroupedPayload = (entriesBySection) => {
 			description: entry.description,
 			handle: entry.handle,
 			name: entry.name,
+			insight: entry.insight ?? {},
 			createdAt: entry.createdAt,
 		}));
 	}
@@ -57,6 +58,22 @@ router.get("/", async (_req, res, next) => {
 	}
 });
 
+const parseInsightPayload = (value) => {
+	if (typeof value !== "string" || !value.trim()) {
+		return {};
+	}
+
+	try {
+		const parsed = JSON.parse(value);
+		if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+			return parsed;
+		}
+		return {};
+	} catch {
+		return {};
+	}
+};
+
 router.get("/:section", async (req, res, next) => {
 	try {
 		const { section } = req.params;
@@ -76,6 +93,7 @@ router.get("/:section", async (req, res, next) => {
 				description: entry.description,
 				handle: entry.handle,
 				name: entry.name,
+				insight: entry.insight ?? {},
 				createdAt: entry.createdAt,
 			}))
 		);
@@ -98,6 +116,7 @@ router.post("/:section", upload.single("image"), async (req, res, next) => {
 		const description = typeof req.body.description === "string" ? req.body.description.trim() : "";
 		const handle = typeof req.body.handle === "string" ? req.body.handle.trim() : "";
 		const name = typeof req.body.name === "string" ? req.body.name.trim() : "";
+		const insight = parseInsightPayload(req.body.insight);
 
 		if (section === "fonts") {
 			if (!name) {
@@ -127,6 +146,7 @@ router.post("/:section", upload.single("image"), async (req, res, next) => {
 			handle,
 			name,
 			image: imageUrl,
+			insight,
 		});
 
 		return res.status(201).json({
@@ -136,6 +156,7 @@ router.post("/:section", upload.single("image"), async (req, res, next) => {
 			description: createdEntry.description,
 			handle: createdEntry.handle,
 			name: createdEntry.name,
+			insight: createdEntry.insight ?? {},
 			createdAt: createdEntry.createdAt,
 		});
 	} catch (error) {
@@ -162,6 +183,7 @@ router.put("/:section/:id", upload.single("image"), async (req, res, next) => {
 		const incomingDescription = typeof req.body.description === "string" ? req.body.description.trim() : undefined;
 		const incomingHandle = typeof req.body.handle === "string" ? req.body.handle.trim() : undefined;
 		const incomingName = typeof req.body.name === "string" ? req.body.name.trim() : undefined;
+		const incomingInsight = typeof req.body.insight === "string" ? parseInsightPayload(req.body.insight) : undefined;
 
 		const nextTitle = incomingTitle ?? existingEntry.title;
 		const nextDescription = incomingDescription ?? existingEntry.description;
@@ -189,6 +211,7 @@ router.put("/:section/:id", upload.single("image"), async (req, res, next) => {
 		existingEntry.handle = nextHandle;
 		existingEntry.name = nextName;
 		existingEntry.image = nextImage;
+		existingEntry.insight = incomingInsight ?? existingEntry.insight ?? {};
 
 		const updatedEntry = await existingEntry.save();
 
@@ -199,6 +222,7 @@ router.put("/:section/:id", upload.single("image"), async (req, res, next) => {
 			description: updatedEntry.description,
 			handle: updatedEntry.handle,
 			name: updatedEntry.name,
+			insight: updatedEntry.insight ?? {},
 			createdAt: updatedEntry.createdAt,
 		});
 	} catch (error) {
