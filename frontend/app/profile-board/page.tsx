@@ -334,7 +334,7 @@ export default function ProfileBoardPage() {
         </div>
 
         <section className="mt-5 space-y-5">
-          <article className={`${baseCardClass} overflow-hidden rounded-[30px] px-4 pb-5 pt-4`}>
+          <article className={`${baseCardClass} mb-15 overflow-hidden rounded-[30px] px-4 pb-5 pt-4`}>
             <div className="rounded-[22px] border border-zinc-300/85 bg-white p-2">
               <Image
                 src="/FunSites.png"
@@ -350,7 +350,7 @@ export default function ProfileBoardPage() {
             </p>
           </article>
 
-          <div className="grid grid-cols-2 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 items-start gap-4 sm:gap-5">
             <article className={`${baseCardClass} overflow-hidden rounded-[30px] bg-white px-3 pb-5 pt-3`}>
               <div className="overflow-hidden rounded-[22px] bg-white p-2">
                 <Image
@@ -372,7 +372,7 @@ export default function ProfileBoardPage() {
                   alt="Personal Branding"
                   fill
                   sizes="(max-width: 640px) 44vw, 190px"
-                  className="object-cover"
+                  className="object-cover "
                 />
               </div>
             </article>
