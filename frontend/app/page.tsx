@@ -562,7 +562,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-[100svh] w-screen overflow-x-hidden overflow-y-auto bg-black px-2 sm:px-4">
+    <div className="min-h-[100svh] w-full overflow-x-hidden overflow-y-auto bg-black px-2 sm:px-4">
 
       <motion.div
         className="relative mx-auto w-full bg-[#fbfbfb] px-3 sm:px-4 pb-10 pt-5 sm:max-w-[440px] max-w-full overflow-hidden"
