@@ -1,112 +1,191 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import HomeIcon from "../../public/home.png";
-import PlusIcon from "../../public/plusIcon.png";
 
-type BoardItem = {
-  id: string;
+type ImageCardData = {
+  type: "image";
   title: string;
-  image?: string;
-  variant: "image" | "sticky" | "text" | "bookmark" | "threads";
+  image: string;
+  alt: string;
 };
 
-const boardItems: BoardItem[] = [
-  { id: "1", title: "Create Outfits", image: "/createOutfits.png", variant: "image" },
-  { id: "2", title: "Onboarding Clients", variant: "sticky" },
-  { id: "3", title: "Shoot One Profile Pic Image", image: "/focuss.jpg", variant: "image" },
-  { id: "4", title: "Create a Idea Bucket", image: "/book2.jpg", variant: "image" },
-  { id: "5", title: "Create a carousel post - Month Dump", image: "/book3.jpg", variant: "image" },
+type StickyNoteCardData = {
+  type: "sticky";
+  title: string;
+  image: string;
+};
+
+type TextIdeaCardData = {
+  type: "textIdea";
+  heading: string;
+  description: string;
+};
+
+type CardData = ImageCardData | StickyNoteCardData | TextIdeaCardData;
+
+const leftColumnCards: CardData[] = [
   {
-    id: "6",
-    title: "SCROLL-STOPPING HOOKS\n\nCreate 10 Hooks for your upcoming Content",
-    variant: "text",
+    type: "image",
+    title: "Create Outfits",
+    image: "/createOutfits.png",
+    alt: "Create Outfits",
   },
-  { id: "7", title: "Use/Create Automations", image: "/craftxImg.png", variant: "image" },
-  { id: "8", title: "Beyond Basic. Top Tier. Elite. Exceptionally Good.", variant: "bookmark" },
-  { id: "9", title: "Learn Only 10 New Words", image: "/crochet.png", variant: "image" },
-  { id: "10", title: "Spend 10 mins on Threads", variant: "threads" },
-  { id: "11", title: "Deep Work Sprint", image: "/guitar.png", variant: "image" },
-  { id: "12", title: "Plan Weekly Content", image: "/starbucks.jpg", variant: "image" },
+  {
+    type: "image",
+    title: "Create a carousel post - Month Dump",
+    image: "/CarouselDump.jpg",
+    alt: "Create a carousel post - Month Dump",
+  },
+  {
+    type: "image",
+    title: "Shoot One Profile Pic Image",
+    image: "/ShootImg.jpg",
+    alt: "Shoot One Profile Pic Image",
+  },
+  {
+    type: "image",
+    title: "Use/Create Automations",
+    image: "/Automations.jpg",
+    alt: "Use/Create Automations",
+  },
 ];
 
-function BoardCard({ item }: { item: BoardItem }) {
-  if (item.variant === "sticky") {
-    return (
-      <article className="rounded-[26px] bg-white p-4 shadow-3d-card">
-        <div className="mx-auto w-[130px] rotate-2 rounded-[12px] bg-[#f8d447] px-3 py-4 text-center text-[18px] leading-tight text-zinc-900 caveat-brush-regular shadow-[0_10px_18px_rgba(0,0,0,0.2)]">
-          <p>Onboarding</p>
-          <p>Clients</p>
-        </div>
-      </article>
-    );
-  }
+const rightColumnCards: CardData[] = [
+  {
+    type: "sticky",
+    title: "Onboarding Clients",
+    image: "/OnboardingClients.png",
+  },
+  {
+    type: "textIdea",
+    heading: "SCROLL-STOPPING HOOKS",
+    description: "Create 10 Hooks for your upcoming Content",
+  },
+  {
+    type: "image",
+    title: "Learn Only 10 New Words",
+    image: "/Duolingo.png",
+    alt: "Learn Only 10 New Words",
+  },
+  {
+    type: "image",
+    title: "Create a Idea Bucket",
+    image: "/IdeaBucket.jpg",
+    alt: "Create a Idea Bucket",
+  },
+  {
+    type: "image",
+    title: "Beyond Basic. Top Tier. Elite. Exceptionally Good.",
+    image: "/Substack.jpg",
+    alt: "Beyond Basic. Top Tier. Elite. Exceptionally Good.",
+  },
+  {
+    type: "image",
+    title: "Spend 10 mins on Threads",
+    image: "/Threads.jpg",
+    alt: "Spend 10 mins on Threads",
+  },
+];
 
-  if (item.variant === "text") {
-    return (
-      <article className="rounded-[26px] bg-white px-4 py-8 text-center shadow-3d-card">
-        <p className="whitespace-pre-line text-[20px] leading-tight text-zinc-900 mooli-regular">{item.title}</p>
-      </article>
-    );
-  }
+const baseCardClass =
+  "rounded-[28px] bg-white shadow-[0_14px_30px_-20px_rgba(0,0,0,0.45),0_8px_16px_-14px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:scale-[1.02]";
 
-  if (item.variant === "bookmark") {
-    return (
-      <article className="rounded-[26px] bg-white px-4 py-6 text-center shadow-3d-card">
-        <div className="mx-auto mb-4 h-20 w-16 bg-[#ea7a33] [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]" />
-        <p className="text-[18px] leading-snug text-zinc-900 mooli-regular">{item.title}</p>
-      </article>
-    );
-  }
-
-  if (item.variant === "threads") {
-    return (
-      <article className="rounded-[26px] bg-white p-3 text-center shadow-3d-card">
-        <div className="rounded-[18px] bg-black py-3 text-[72px] leading-none text-white">@</div>
-        <p className="pt-3 text-[18px] leading-tight text-zinc-900 mooli-regular">{item.title}</p>
-      </article>
-    );
-  }
-
+function ImageCard({ title, image, alt }: ImageCardData) {
   return (
-    <article className="rounded-[26px] bg-white p-2 shadow-3d-card">
-      <img
-        src={item.image}
-        alt={item.title}
-        className="w-full rounded-[18px] object-cover shadow-3d-inner"
+    <article className={`${baseCardClass} p-3`}>
+      <Image
+        src={image}
+        alt={alt}
+        width={420}
+        height={620}
+        sizes="(max-width: 640px) 44vw, 190px"
+        className="h-auto w-full rounded-[20px] object-cover"
       />
-      <p className="px-2 pb-2 pt-3 text-center text-[18px] leading-tight text-zinc-900 mooli-regular">
-        {item.title}
-      </p>
+      <p className="pt-3 text-center text-[15px] leading-snug text-zinc-900 oxygen-bold">{title}</p>
     </article>
+  );
+}
+
+function StickyNoteCard({ title, image }: StickyNoteCardData) {
+  return (
+    <article className={`${baseCardClass} p-3`}>
+      <Image
+        src={image}
+        alt={title}
+        width={317}
+        height={253}
+        sizes="(max-width: 640px) 44vw, 190px"
+        className="h-auto w-full rounded-[20px] object-cover"
+      />
+    </article>
+  );
+}
+
+function TextIdeaCard({ heading, description }: TextIdeaCardData) {
+  return (
+    <article className={`${baseCardClass} flex min-h-[300px] flex-col items-center justify-center px-7 py-10`}>
+      <h3 className="text-center text-[14px] leading-tight tracking-wide text-zinc-900 oxygen-bold">{heading}</h3>
+      <p className="mt-14 text-center text-[18px] leading-snug text-zinc-900 inter-regular">{description}</p>
+    </article>
+  );
+}
+
+function CardColumn({ cards }: { cards: CardData[] }) {
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-4 sm:gap-5">
+      {cards.map((card, index) => {
+        if (card.type === "image") {
+          return <ImageCard key={`${card.title}-${index}`} {...card} />;
+        }
+
+        if (card.type === "sticky") {
+          return <StickyNoteCard key={`${card.title}-${index}`} {...card} />;
+        }
+
+        if (card.type === "textIdea") {
+          return <TextIdeaCard key={`${card.heading}-${index}`} {...card} />;
+        }
+
+        return null;
+      })}
+    </div>
   );
 }
 
 export default function ProfileBoardPage() {
   return (
-    <main className="h-dvh overflow-hidden bg-[#cfcfcf] px-4 py-4 sm:py-6">
-      <section className="profile-board-scroll mx-auto flex h-full w-full max-w-[430px] flex-col overflow-y-auto rounded-[38px] bg-[#f3f3f3] px-5 pb-8 pt-5">
-        <header className="mb-5 flex items-center justify-between">
-          <Link href="/" aria-label="Go home" className="rounded-full p-1">
-            <Image src={HomeIcon} alt="Home" width={30} height={30} />
+    <main className="no-scrollbar min-h-[100svh] w-screen overflow-x-hidden overflow-y-auto bg-black">
+      <div className="relative mx-auto w-full max-w-full overflow-hidden bg-[#fbfbfb] px-3 pb-10 pt-5 sm:max-w-[440px] sm:px-4">
+        <header className="mb-5 flex items-center justify-between gap-2">
+          <Link
+            href="/"
+            className="rounded-full bg-[#FBFBFB] p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.10)] flex-shrink-0"
+            aria-label="Home"
+          >
+            <Image src="/home.png" alt="Home" width={30} height={30} />
           </Link>
-          <button type="button" aria-label="Add" className="h-9 w-9">
-            <Image src={PlusIcon} alt="Add" width={36} height={36} />
+          <button
+            type="button"
+            className="flex h-12 w-12 items-center justify-center text-white flex-shrink-0"
+            aria-label="Add"
+          >
+            <Image src="/plusIcon.png" alt="Add" width={50} height={50} />
           </button>
         </header>
 
-        <input
-          placeholder="Search your Interests..."
-          className="mb-7 w-full rounded-[14px] border border-zinc-400/70 bg-transparent px-4 py-2.5 text-[14px] text-zinc-700 placeholder:text-zinc-600 mooli-regular focus:outline-none"
-        />
-
-        <div className="columns-2 gap-4">
-          {boardItems.map((item) => (
-            <div key={item.id} className="mb-4 break-inside-avoid">
-              <BoardCard item={item} />
-            </div>
-          ))}
+        <div className="relative mb-7">
+          <input
+            placeholder="Search your Interests..."
+            className="w-full rounded-full border border-zinc-200/70 bg-white px-3 py-2 text-xs shadow-[0_8px_18px_rgba(0,0,0,0.08)] focus:outline-none sm:px-4 sm:py-3 sm:text-sm"
+          />
         </div>
-      </section>
+
+        <div className="mx-auto flex w-full justify-center gap-3 sm:gap-4">
+          <CardColumn cards={leftColumnCards} />
+          <CardColumn cards={rightColumnCards} />
+        </div>
+      </div>
     </main>
   );
 }

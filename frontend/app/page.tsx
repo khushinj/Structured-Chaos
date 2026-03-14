@@ -43,6 +43,15 @@ type ApiEntry = {
   name?: string;
 };
 
+type HomeBoardCard = {
+  type: "image" | "sticky" | "text" | "collage";
+  title: string;
+  image?: string;
+  images?: string[];
+  heading?: string;
+  description?: string;
+};
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://structuredchaos.onrender.com";
 
 const emptyForm: FormState = {
@@ -110,6 +119,110 @@ const defaultHobbies: BasicCard[] = [];
 const defaultGrooming: BasicCard[] = [];
 const defaultFitness: BasicCard[] = [];
 const defaultExplore: BasicCard[] = [];
+
+const homeBoardLeftCards: HomeBoardCard[] = [
+  {
+    type: "image",
+    title: "Create Outfits",
+    image: "/images/outfit.jpg",
+  },
+  {
+    type: "collage",
+    title: "Create a carousel post - Month Dump",
+    images: [
+      "/images/month-dump.jpg",
+      "/images/collage-1.jpg",
+      "/images/collage-2.jpg",
+      "/images/collage-3.jpg",
+    ],
+  },
+  {
+    type: "image",
+    title: "Learn Only 10 New Words",
+    image: "/images/new-words.jpg",
+  },
+];
+
+const homeBoardRightCards: HomeBoardCard[] = [
+  {
+    type: "sticky",
+    title: "Onboarding Clients",
+  },
+  {
+    type: "text",
+    title: "",
+    heading: "SCROLL-STOPPING HOOKS",
+    description: "Create 10 Hooks for your upcoming Content",
+  },
+];
+
+const boardCardBaseClass =
+  "rounded-[28px] bg-white shadow-[0_14px_30px_-20px_rgba(0,0,0,0.45),0_8px_16px_-14px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:scale-[1.02]";
+
+function HomeBoardColumn({ cards }: { cards: HomeBoardCard[] }) {
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-4">
+      {cards.map((card, index) => {
+        if (card.type === "image" && card.image) {
+          return (
+            <article key={`${card.title}-${index}`} className={`${boardCardBaseClass} p-3`}>
+              <Image
+                src={card.image}
+                alt={card.title}
+                width={420}
+                height={620}
+                sizes="(max-width: 640px) 44vw, 190px"
+                className="h-auto w-full rounded-[20px] object-cover"
+              />
+              <p className="pt-3 text-center text-[15px] leading-snug text-zinc-900 oxygen-bold">{card.title}</p>
+            </article>
+          );
+        }
+
+        if (card.type === "sticky") {
+          return (
+            <article key={`${card.title}-${index}`} className={`${boardCardBaseClass} flex h-[150px] items-center justify-center p-3`}>
+              <div className="relative h-[90px] w-full max-w-[170px]">
+                <div className="absolute left-2 top-0 h-[80px] w-[72%] -rotate-[1.4deg] rounded-[8px] bg-[#facc15] shadow-[0_8px_18px_rgba(0,0,0,0.18)]" />
+                <div className="absolute right-0 top-2 h-[80px] w-[72%] rotate-[0.8deg] rounded-[8px] bg-[#fde047] p-3 shadow-[0_8px_18px_rgba(0,0,0,0.22)]">
+                  <p className="text-center text-[16px] leading-tight text-zinc-900 karla-regular">{card.title}</p>
+                </div>
+              </div>
+            </article>
+          );
+        }
+
+        if (card.type === "text") {
+          return (
+            <article key={`${card.heading}-${index}`} className={`${boardCardBaseClass} flex min-h-[300px] flex-col items-center justify-center px-7 py-10`}>
+              <h3 className="text-center text-[14px] leading-tight tracking-wide text-zinc-900 oxygen-bold">{card.heading}</h3>
+              <p className="mt-14 text-center text-[18px] leading-snug text-zinc-900 inter-regular">{card.description}</p>
+            </article>
+          );
+        }
+
+        return (
+          <article key={`${card.title}-${index}`} className={`${boardCardBaseClass} p-3`}>
+            <div className="grid grid-cols-2 gap-2 rounded-[20px] bg-zinc-100 p-2">
+              {(card.images ?? []).map((img) => (
+                <Image
+                  key={img}
+                  src={img}
+                  alt="Month dump collage"
+                  width={280}
+                  height={230}
+                  sizes="(max-width: 640px) 21vw, 90px"
+                  className="h-[88px] w-full rounded-[12px] object-cover"
+                />
+              ))}
+            </div>
+            <p className="pt-3 text-center text-[15px] leading-snug text-zinc-900 oxygen-bold">{card.title}</p>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
 
 const getFontClass = (fontName: string) => {
   switch (fontName.toLowerCase()) {
@@ -450,34 +563,12 @@ export default function Home() {
             </motion.p>
           )}
 
-          <motion.div variants={fadeItem}>
-            <Link
-              href="/profile-board"
-              className="block rounded-[49px] min-h-[320px] bg-[#FFFDFD] pb-3 px-2 mt-7 shadow-3d-card overflow-hidden transition-transform duration-200 hover:scale-[1.01] active:scale-[0.99]"
-            >
-              <div className="relative w-full">
-                <img
-                  src="/ProfileCardImg.jpg"
-                  alt="Cover"
-                  className="h-40 w-full rounded-[39px] mt-2 object-cover"
-                />
-                <img
-                  src="/ProfileCardImg.jpg"
-                  alt="Khushi Joshi"
-                  className="absolute -bottom-6 left-4 h-12 w-12 rounded-full border-2 border-white object-cover"
-                />
-              </div>
-              <div className="mt-8 px-2 overflow-hidden">
-                <h1 className="text-lg sm:text-xl oxygen-bold truncate">
-                  Khushi Joshi
-                </h1>
-                <p className="text-sm inter-regular text-[#787878]">Digital Architect</p>
-                <p className="mt-3 text-sm karla-regular line-clamp-2">
-                  Designing my own operating system for growth.
-                </p>
-              </div>
-            </Link>
-          </motion.div>
+          <motion.section variants={fadeItem} className="mt-4">
+            <div className="mx-auto flex w-full justify-center gap-3 sm:gap-4">
+              <HomeBoardColumn cards={homeBoardLeftCards} />
+              <HomeBoardColumn cards={homeBoardRightCards} />
+            </div>
+          </motion.section>
 
           <motion.section id="pages-section" className="flex flex-col gap-3 my-8 sm:my-10" variants={fadeItem}>
             <div className="flex items-center justify-between gap-2">
